@@ -1,0 +1,2084 @@
+var lycees;
+var lyceesprives;
+var Typelycee;
+$(document).ready(function () {
+    $('.body-page-preinscription-mobile #edit-pays-preinscription').change(function () {
+
+
+        $('#edit-gsm').removeClass('validate-8-8');
+        $('#edit-gsm').removeClass('validate-9-9');
+        $('#edit-gsm').removeClass('validate-9-10');
+        var current_pays = $(this).val();
+        if (current_pays === 'Maroc') {
+            $('#edit-gsm').removeClass('validate-8-8');
+            $('#edit-gsm').removeClass('validate-9-10');
+            $('#edit-gsm').removeClass('validate-9-9');
+            $('#edit-gsm').addClass('validate-9-9');
+        } else if (current_pays === 'France') {
+            $('#edit-gsm').removeClass('validate-9-10');
+            $('#edit-gsm').removeClass('validate-9-9');
+            $('#edit-gsm').removeClass('validate-8-8');
+            $('#edit-gsm').addClass('validate-9-10');
+        } else if ($.inArray(current_pays, ['Tchad', 'Zimbabwe', 'Zambie', 'Togo', 'Somalie', 'Sénégal', 'Rwanda', 'Malawi', 'Niger', 'Nigéria', 'Maurice', 'Guinée', 'Guyana', 'Ghana', 'Gambie', 'Gabon', 'Côte-dIvoire', 'Congo', 'Cap-Vert', 'Afrique-du-Sud', 'Cameroun', 'Botswana', 'Bénin', 'Angola']) !== -1) {
+            $('#edit-gsm').removeClass('validate-9-10');
+            $('#edit-gsm').removeClass('validate-9-9');
+            $('#edit-gsm').removeClass('validate-8-8');
+            $('#edit-gsm').addClass('validate-9-10');
+        } else {
+            $('#edit-gsm').removeClass('validate-9-10');
+            $('#edit-gsm').removeClass('validate-8-8');
+            $('#edit-gsm').removeClass('validate-9-9');
+            $('#edit-gsm').addClass('validate-9-10');
+        }
+    });
+    $('.body-page-preinscription-mobile #uic-forms-preinscription-candidat-new .form-submit').click(function () {
+
+
+        var error = 0;
+        //        -----------------Recuperation du type de formation pour executer le tag correspondant------------------------
+        var current_type = '';
+        if ($('#edit-type-inscription-oldBachelier').length > 0) {
+            if ($('#edit-type-inscription-oldBachelier').is(':checked')) {
+                current_type = $('#edit-type-inscription-oldBachelier').val();
+            } else {
+                current_type = $('#edit-type-inscription-bachelier').val();
+            }
+        } else {
+            current_type = 'executive';
+        }
+
+//        validation date de naissance
+        if ($('#edit-datenaissance').length > 0) {
+            var dateNaiss = $('input#edit-datenaissance').val();
+            $('input#edit-datenaissance').removeClass('erreur-form');
+            if (dateNaiss.length > 0) {
+                var dates = dateNaiss.split('/');
+                var fullDate = new Date();
+                if (dates[2] <= 1970 || dates[2] >= fullDate.getFullYear() - 10) {
+                    $('input#edit-datenaissance').addClass('erreur-form');
+                    error++;
+                }
+                if (dates[1] > 12 || dates[1] < 1) {
+                    $('input#edit-datenaissance').addClass('erreur-form');
+                    error++;
+                }
+                if (dates[0] > 31 || dates[0] < 1) {
+                    $('input#edit-datenaissance').addClass('erreur-form');
+                    error++;
+                }
+            } else {
+                $('input#edit-datenaissance').addClass('erreur-form');
+                error++;
+            }
+        }
+//        validation de nom
+        var nom = $('#edit-nom').val();
+        $('#edit-nom').removeClass('erreur-form');
+        if (nom.length === 0) {
+            $('#edit-nom').addClass('erreur-form');
+            error++;
+        }
+//        validation de prénom
+        var prenom = $('#edit-prenom').val();
+        $('#edit-prenom').removeClass('erreur-form');
+        if (prenom.length === 0) {
+            $('#edit-prenom').addClass('erreur-form');
+            error++;
+        }
+//        validation de l'email
+        var email = $('#edit-email').val();
+        $('#edit-email').removeClass('erreur-form');
+        if (!isValidEmailAddress(email)) {
+            $('#edit-email').addClass('erreur-form');
+            error++;
+        }
+//        validation du pays
+        var pays = $('#edit-pays-preinscription').val();
+        $('#edit-pays-preinscription').removeClass('erreur-form');
+        if (pays.length === 0) {
+            $('#edit-pays-preinscription').addClass('erreur-form');
+            error++;
+        }
+//        validation du gsm
+
+        $('#edit-gsm').removeClass('erreur-form');
+        var gsm = $('#edit-gsm').val();
+        if (gsm.length === 0) {
+            $('#edit-gsm').addClass('erreur-form');
+            error++;
+        } else {
+            if ($('#edit-gsm').hasClass("validate-9-9") && $('#edit-gsm').val().length != 9)
+            {
+                $('#edit-gsm').addClass('erreur-form');
+                error++;
+            } else if ($('#edit-gsm').hasClass("validate-8-8") && $('#edit-gsm').val().length != 8)
+            {
+                $('#edit-gsm').addClass('erreur-form');
+                error++;
+            } else if ($('#edit-gsm').hasClass("validate-9-10") && ($('#edit-gsm').val().length != 9 && $('#edit-gsm').val().length != 10))
+            {
+                $('#edit-gsm').addClass('erreur-form');
+                error++;
+            }
+        }
+
+        //        validation de niveau etude
+        var ne = $('#edit-niveau-etude').val();
+        $('#edit-niveau-etude').removeClass('erreur-form');
+        if (ne.length === 0) {
+            $('#edit-niveau-etude').addClass('erreur-form');
+            error++;
+        }
+
+        //        validation de intereser par
+        var inp = $('#edit-new-produit-demande').val();
+        $('#edit-new-produit-demande').removeClass('erreur-form');
+        if (inp.length === 0) {
+            $('#edit-new-produit-demande').addClass('erreur-form');
+            error++;
+        }
+
+        //        validation de test admission
+        //var tstadmi = $('#edit-test-admission').val();
+        //$('#edit-test-admission').removeClass('erreur-form');
+        //if (tstadmi.length === 0) {
+        //    $('#edit-test-admission').addClass('erreur-form');
+        //    error++;
+        //}
+
+        //        validation de ville lycee
+        if(pays == 'Maroc' && window.location.href.indexOf("formation") > -1 || window.location.href.indexOf("journee-portes-ouvertes-24-mars") > -1){
+            var villelycee = $('#edit-ville').val();
+            $('#edit-ville').removeClass('erreur-form');
+            if (villelycee.length == 0) {
+                $('#edit-ville').addClass('erreur-form');
+                error++;
+            }
+
+            //        validation de nom lycee
+            var nomlycee = $('#edit-lycee-bac').val();
+            $('#edit-lycee-bac').removeClass('erreur-form');
+            if (nomlycee.length == 0) {
+                $('#edit-lycee-bac').addClass('erreur-form');
+                error++;
+            }
+
+            //        validation de nom lycee
+            var villepays = $('#edit-ville-pays').val();
+            $('#edit-ville-pays').removeClass('erreur-form');
+            if (villepays.length == 0) {
+                $('#edit-ville-pays').addClass('erreur-form');
+                error++;
+            }
+        }
+        //validation civilte
+        var civilite = $('input[name="civilite"]').is(':checked');
+        $('.form-item-civilite-preinscription .form-item').removeClass('erreur-form');
+        if(!civilite) {
+            $('.form-item-civilite-preinscription .form-item').addClass('erreur-form');
+            error++;
+        }
+
+        //validation accepter
+        var accepter = $('input[name="accepter"]').is(':checked');
+        $('#edit-accepter-wrapper').removeClass('erreur-form');
+        if(!accepter) {
+            $('#edit-accepter-wrapper').addClass('erreur-form');
+            error++;
+        }
+console.log(error);
+        /*   $('#edit-ville-pays').removeClass('erreur-form');
+         if(window.location.href.indexOf("formation") > -1){
+         $('#edit-ville').removeClass('erreur-form');
+         $('#edit-lycee-bac').removeClass('erreur-form');
+         }*/
+        /*$('select[name="pays-preinscription"]').change(function () {
+         $('#edit-ville-pays').removeClass('erreur-form');
+
+         if(window.location.href.indexOf("formation") > -1){
+         $('#edit-ville').removeClass('erreur-form');
+         $('#edit-lycee-bac').removeClass('erreur-form');
+         }
+         if ($(this).val() == "Maroc") {
+         $('#edit-ville-pays').addClass('erreur-form');
+
+         if(window.location.href.indexOf("formation") > -1){
+         $('#edit-ville').addClass('erreur-form');
+         $('#edit-lycee-bac').addClass('erreur-form');
+         }
+         }
+         });*/
+//            if (!isValidPhone(gsm)) {
+//                $('#edit-gsm').addClass('erreur-form');
+//                error++;
+//            }
+//        validation du ville
+//        var ville = $('#edit-ville-pays').val();
+//        $('#edit-ville-pays').removeClass('erreur-form');
+//        if (ville.length === 0) {
+//            $('#edit-ville-pays').addClass('erreur-form');
+//            error++;
+//        }
+//        validation du ville lycee
+//        if ($('#edit-ville').length > 0) {
+//            var ville_lycee = $('#edit-ville').val();
+//            $('#edit-ville').removeClass('erreur-form');
+//            if (ville_lycee.length === 0) {
+//                $('#edit-ville').addClass('erreur-form');
+//                error++;
+//            }
+//        }
+//        validation du Lycee
+//        if ($('#edit-lycee-bac').length > 0) {
+//            var lycee = $('#edit-lycee-bac').val();
+//            $('#edit-lycee-bac').removeClass('erreur-form');
+//            if (lycee.length === 0) {
+//                $('#edit-lycee-bac').addClass('erreur-form');
+//                error++;
+//            }
+//        }
+//        validation du type bac
+//        if ($('#edit-Type-baccalaureat').length > 0) {
+//            var typeBac = $('#edit-Type-baccalaureat').val();
+//            $('#edit-Type-baccalaureat').removeClass('erreur-form');
+//            if (typeBac.length === 0) {
+//                $('#edit-Type-baccalaureat').addClass('erreur-form');
+//                error++;
+//            }
+//        }
+//        validation du niveau bac
+//        if ($('#edit-overlay-niveau').length > 0) {
+//            var niveauBac = $('#edit-overlay-niveau').val();
+//            $('#edit-Niveau-baccalaureat').removeClass('erreur-form');
+//            if (niveauBac.length === 0) {
+//                $('#edit-Niveau-baccalaureat').addClass('erreur-form');
+//                error++;
+//            }
+//        }
+//        validation du niveau etude
+//        if (current_type === 'oldBachelier') {
+//            var niveauSup = $('#edit-niveau-etude').val();
+//            $('#edit-niveau-etude').removeClass('erreur-form');
+//            if (niveauSup.length === 0) {
+//                $('#edit-niveau-etude').addClass('erreur-form');
+//                error++;
+//            }
+//        }
+//        validation du choix etude uic
+//        $('.continuer_etudes_uic .form-radios').removeClass('erreur-form');
+//        if ($('input[name=choixdetudeauic]:checked').val() === undefined) {
+//            $('.continuer_etudes_uic .form-radios').addClass('erreur-form');
+//            error++;
+//        }
+//        validation du accepter reglement
+//        $('#edit-accepter-wrapper').removeClass('erreur-form');
+//        if (!$('#edit-accepter').is(':checked')) {
+//            $('#edit-accepter-wrapper').addClass('erreur-form');
+//            error++;
+//        }
+//        validation de nb année exp
+//        if ($('#edit-nb-anne-exper').length > 0) {
+//            var nb = $('#edit-nb-anne-exper').val();
+//            $('#edit-nb-anne-exper').removeClass('erreur-form');
+//            if (nb.length === 0) {
+//                $('#edit-nb-anne-exper').addClass('erreur-form');
+//                error++;
+//            }
+//        }
+//        validation de activite pro
+//        if ($('#edit-activite-pro').length > 0) {
+//            var act = $('#edit-activite-pro').val();
+//            $('#edit-activite-pro').removeClass('erreur-form');
+//            if (act.length === 0) {
+//                $('#edit-activite-pro').addClass('erreur-form');
+//                error++;
+//            }
+//        }
+//        validation de secteur activite
+//        if ($('#edit-secteur-activite').length > 0) {
+//            var sect = $('#edit-secteur-activite').val();
+//            $('#edit-secteur-activite').removeClass('erreur-form');
+//            if (sect.length === 0) {
+//                $('#edit-secteur-activite').addClass('erreur-form');
+//                error++;
+//            }
+//        }
+        if (error > 0) {
+            return false;
+        } else {
+            var href = window.location.href;
+            var profil_web = '';
+            if (href.indexOf("executive") > -1) {
+                console.log("executive");
+                if ((jQuery.inArray($('#edit-ville-pays').val(), ['Casablanca', 'Mohammedia']) != '-1') && (jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +4', 'Bac +5']) != '-1'))
+                    profil_web = (jQuery.inArray($('#edit-nb-anne-exper').val(), ['De 5 à  8 ans', 'plus de 8']) != '-1') ? 'FE_P1' : 'FE_P3';
+                else if ((jQuery.inArray($('#edit-ville-pays').val(), ['Casablanca', 'Mohammedia']) != '-1') && $('#edit-niveau-etude').val() == 'Bac +3')
+                    profil_web = (jQuery.inArray($('#edit-nb-anne-exper').val(), ['De 3 à  5 ans', 'De 5 à  8 ans', 'plus de 8']) != '-1') ? 'FE_P2' : 'FE_P4';
+                else if ((jQuery.inArray($('#edit-ville-pays').val(), ['Casablanca', 'Mohammedia']) != '-1') && $('#edit-niveau-etude').val() == 'Bac +2')
+                    profil_web = (jQuery.inArray($('#edit-nb-anne-exper').val(), ['De 5 à  8 ans', 'plus de 8']) != '-1') ? 'FE_P5' : 'FE_P6';
+                else if (jQuery.inArray($('#edit-ville-pays').val(), ['Casablanca', 'Mohammedia']) == '-1')
+                    profil_web = 'FE_P6';
+                if (profil_web != '')
+                    dataLayer.push({'event': profil_web});
+            } else if (href.indexOf("formation") > -1) {
+                var casaregion = ['Casablanca', 'Mohammedia', 'Settat', 'Berrechid', 'Rabat', 'El jadida', 'Kenitra', 'Temara', 'Skhirat', 'El Gara', 'Ben slimane', 'Sale', 'Deroua', 'Bouznika', 'El brouj', 'Harhoura'];
+
+                if ((jQuery.inArray($('#edit-niveau-etude').val(), ['2ème année bac marocain', 'Déjà bachelier']) != '-1') && (jQuery.inArray($('#edit-ville').val(), casaregion) != '-1')){
+                    if(jQuery.inArray($('#edit-lycee-bac').val(), ['ELBILIA', 'Lyautey', 'ALMADINA', 'LE PONT', 'EL MANAL', 'LA RESIDENCE', 'ENNOUR', 'YASSAMINE',
+                            'RAMEAU', 'CALIFORNIE', 'EIC (ORT)', 'Groupe Scolaire ANFA (Bennis)', 'LOUIS MASSIGNON', 'AL JABR', 'Groupe Scolaire TAZI II', 'Groupe scolaire Rahmouni potentiel',
+                            'Louis Bertrand', 'Groupe scolaire berrada', 'Groupe scolaire riad', 'CARREFOUR', 'ROMANDIE', 'MAIMONIDE', 'prépas Classes Préparatoires galilée',
+                            'Lycée Pythagore']) != '-1')
+                        profil_web =  'FI_B_P1';
+                    else{
+                        profil_web = 'FI_B_P4';
+                        $.each(lyceesprives, function (index, value) {
+                            if($('#edit-lycee-bac').val() === value)
+                                profil_web = 'FI_B_P2';
+                        });
+                    }
+                }else if ((jQuery.inArray($('#edit-niveau-etude').val(), ['2ème année bac marocain', 'Déjà bachelier']) != '-1') && (jQuery.inArray($('#edit-ville').val(), casaregion) == '-1')){
+                    profil_web = 'FI_B_P5';
+                    $.each(lyceesprives, function (index, value) {
+                        if($('#edit-lycee-bac').val() === value)
+                            profil_web = 'FI_B_P3';
+                    });
+                }else if ((jQuery.inArray($('#edit-niveau-etude').val(), ['2ème année bac marocain', 'Déjà bachelier']) != '-1') && ($('#edit-pays-preinscription').val() != 'Maroc'))
+                    profil_web = 'Etranger_B';
+                else if ((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +1', 'Bac +2', 'Bac +3', 'Bac +4', 'Bac +5']) != '-1') && (jQuery.inArray($('#edit-ville').val(), casaregion) != '-1')){
+                    if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +1', 'Bac +2', 'Bac +3']) != '-1'))
+                        profil_web = 'FI_AP_P1';
+                    else if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +4']) != '-1'))
+                        profil_web = 'FI_AP_P3';
+                    else if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +5']) != '-1'))
+                        profil_web = 'FI_AP_P4';
+                }else if ((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +1', 'Bac +2', 'Bac +3', 'Bac +4', 'Bac +5']) != '-1') && (jQuery.inArray($('#edit-ville').val(), casaregion) == '-1')){
+                    if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +1', 'Bac +2', 'Bac +3']) != '-1'))
+                        profil_web = 'FI_AP_P2';
+                    else if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +4']) != '-1'))
+                        profil_web = 'FI_AP_P3';
+                    else if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +5']) != '-1'))
+                        profil_web = 'FI_AP_P4';
+                }else if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +1', 'Bac +2', 'Bac +3', 'Bac +4', 'Bac +5']) != '-1') && $('#edit-pays-preinscription').val() != 'Maroc')
+                    profil_web = 'Etranger_AP';
+                if (profil_web != '')
+                    dataLayer.push({'event': profil_web});
+            }
+
+            if (href.indexOf("executive") > -1) {
+                dataLayer.push({'event': 'FE_All'});
+                dataLayer.push({'event': 'formation_executive'});
+            } else if (href.indexOf("formation") > -1) {
+                dataLayer.push({'event': 'FI_All'});
+            }
+            console.log(profil_web);
+        }
+    });
+    $('.body-page-preinscription-mobile #uic-forms-inscriptions-krayti .form-submit').click(function () {
+        var error = 0;
+        //        validation de nom
+        var nom = $('#edit-nom').val();
+        $('#edit-nom').removeClass('erreur-form');
+        if (nom.length === 0) {
+            $('#edit-nom').addClass('erreur-form');
+            error++;
+        }
+//        validation de prénom
+        var prenom = $('#edit-prenom').val();
+        $('#edit-prenom').removeClass('erreur-form');
+        if (prenom.length === 0) {
+            $('#edit-prenom').addClass('erreur-form');
+            error++;
+        }
+//        validation de l'email
+        var email = $('#edit-email').val();
+        $('#edit-email').removeClass('erreur-form');
+        if (!isValidEmailAddress(email)) {
+            $('#edit-email').addClass('erreur-form');
+            error++;
+        }
+
+//        validation du gsm
+        var gsm = $('#edit-gsm').val();
+        $('#edit-gsm').removeClass('erreur-form');
+        if (!isValidPhone(gsm)) {
+            $('#edit-gsm').addClass('erreur-form');
+            error++;
+        }
+//        validation du ville
+        var ville = $('#edit-ville-pays').val();
+        $('#edit-ville-pays').removeClass('erreur-form');
+        if (ville.length === 0) {
+            $('#edit-ville-pays').addClass('erreur-form');
+            error++;
+        }
+
+//        validation du champ vous etes
+        var typeInscription = $('#edit-type-inscription').val();
+        $('#edit-type-inscription').removeClass('erreur-form');
+        if (typeInscription.length === 0) {
+            $('#edit-type-inscription').addClass('erreur-form');
+            error++;
+        }
+
+//        validation du type bac
+        var typeBac = $('#edit-Type-baccalaureat').val();
+        $('#edit-Type-baccalaureat').removeClass('erreur-form');
+        if (typeBac.length === 0) {
+            $('#edit-Type-baccalaureat').addClass('erreur-form');
+            error++;
+        }
+//        validation du niveau bac
+        var niveauBac = $('#edit-overlay-niveau').val();
+        $('#edit-Niveau-baccalaureat').removeClass('erreur-form');
+        if (niveauBac.length === 0) {
+            $('#edit-Niveau-baccalaureat').addClass('erreur-form');
+            error++;
+        }
+
+        if (error > 0) {
+            return false;
+        }
+    });
+    $('#uic-forms-inscriptions-krayti .niveau_bac select').change(function ()
+    {
+        var niveau_bac = '';
+        $('.niveau_bac .form-item').each(function () {
+            if ($(this).css("display") === "block") {
+                niveau_bac = $(this).find('select').val();
+            }
+        });
+        $('#edit-overlay-niveau').val(niveau_bac);
+    });
+    $('.body-page-preinscription-mobile #uic-forms-inscriptions .form-submit').click(function () {
+        var error = 0;
+        //        validation de nom
+        var nom = $('#edit-nom').val();
+        $('#edit-nom').removeClass('erreur-form');
+        if (nom.length === 0) {
+            $('#edit-nom').addClass('erreur-form');
+            error++;
+        }
+//        validation de prénom
+        var prenom = $('#edit-prenom').val();
+        $('#edit-prenom').removeClass('erreur-form');
+        if (prenom.length === 0) {
+            $('#edit-prenom').addClass('erreur-form');
+            error++;
+        }
+//        validation de l'email
+        var email = $('#edit-email').val();
+        $('#edit-email').removeClass('erreur-form');
+        if (!isValidEmailAddress(email)) {
+            $('#edit-email').addClass('erreur-form');
+            error++;
+        }
+//        validation du pays
+        var pays = $('#edit-pays-preinscription').val();
+        $('#edit-pays-preinscription').removeClass('erreur-form');
+        if (pays.length === 0) {
+            $('#edit-pays-preinscription').addClass('erreur-form');
+            error++;
+        }
+
+//        validation du gsm
+        var gsm = $('#edit-gsm').val();
+        $('#edit-gsm').removeClass('erreur-form');
+        if (!isValidPhone(gsm)) {
+            $('#edit-gsm').addClass('erreur-form');
+            error++;
+        }
+//        validation du ville
+        var ville = $('#edit-ville-pays').val();
+        $('#edit-ville-pays').removeClass('erreur-form');
+        if (ville.length === 0) {
+            $('#edit-ville-pays').addClass('erreur-form');
+            error++;
+        }
+
+//        validation du champ vous etes
+        var typeInscription = $('#edit-type-inscription').val();
+        $('#edit-type-inscription').removeClass('erreur-form');
+        if (typeInscription.length === 0) {
+            $('#edit-type-inscription').addClass('erreur-form');
+            error++;
+        }
+
+//        validation du type bac
+        var typeBac = $('#edit-Type-baccalaureat').val();
+        $('#edit-Type-baccalaureat').removeClass('erreur-form');
+        if (typeBac.length === 0) {
+            $('#edit-Type-baccalaureat').addClass('erreur-form');
+            error++;
+        }
+//        validation du niveau bac
+        var niveauBac = $('#edit-Niveau-baccalaureat').val();
+        $('#edit-Niveau-baccalaureat').removeClass('erreur-form');
+        if (niveauBac.length === 0) {
+            $('#edit-Niveau-baccalaureat').addClass('erreur-form');
+            error++;
+        }
+
+        if (error > 0) {
+            return false;
+        }
+    });
+//    $('#edit-niveau-etude-wrapper').hide();
+//    $('.formation-lp-executive #edit-niveau-etude-wrapper').show();
+//    $('.content-executive #edit-niveau-etude-wrapper').show();
+//    $('input[name="type_inscription"]').change(function () {
+//        $('#edit-niveau-etude-wrapper').hide();
+//        if ($('#edit-type-inscription-oldBachelier').is(':checked')) {
+//            $('#edit-niveau-etude-wrapper').show();
+//            $('#edit-niveau-etude-wrapper').addClass('validate[required]');
+//        } else if ($('#edit-type-inscription-bachelier').is(':checked')) {
+//            $('#edit-niveau-etude-wrapper').hide();
+//        }
+//    });
+    if ($('.body-page-preinscription-desktop #uic-forms-preinscription-candidat-new').length > 0)
+        //$('.body-page-preinscription-desktop #uic-forms-preinscription-candidat-new').validationEngine();
+        $('.body-page-preinscription-desktop #uic-forms-preinscription-candidat-new').validationEngine({binded: false});
+    //formulaire préinscreption
+    $('#uic-forms-preinscription-candidat-new .niveau_bac select').change(function ()
+    {
+        var niveau_bac = '';
+        $('.niveau_bac .form-item').each(function () {
+            if ($(this).css("display") === "block") {
+                niveau_bac = $(this).find('select').val();
+            }
+        });
+        $('#edit-overlay-niveau').val(niveau_bac);
+    });
+
+    //pays if maroc en gras
+    $("#edit-pays-preinscription option[value='Maroc']").css({'font-weight':'bold'});
+
+
+    $('#edit-pays-preinscription').change(function () {
+        var current_pays = $(this).val();
+        var current_indicatif = '';
+        $("#edit-lycee-bac").val('');
+        $('#edit-gsm').removeClass('validate[required,custom[onlyNumberSp],minSize[8],maxSize[8]]');
+        $('#edit-gsm').removeClass('validate[required,custom[onlyNumberSp],minSize[9],maxSize[10]]');
+        $('#edit-gsm').removeClass('validate[required,custom[onlyNumberSp],minSize[9],maxSize[9]]');
+        $('#edit-gsm').addClass('validate[required,custom[onlyNumberSp],minSize[9],maxSize[10]]');
+        if (current_pays === 'Maroc') {
+            $("#edit-gsm").attr("placeholder", "Téléphone (ex: 610121010)");
+            current_indicatif = '+212';
+            $('#edit-gsm').removeClass('validate[required,custom[onlyNumberSp],minSize[9],maxSize[10]]');
+            $('#edit-gsm').removeClass('validate[required,custom[onlyNumberSp],minSize[10],maxSize[10]]');
+            $('#edit-gsm').addClass('validate[required,custom[onlyNumberSp],minSize[9],maxSize[9]]');
+        } else {
+
+            $("#edit-gsm").attr("placeholder", "Téléphone");
+            if (current_pays === 'France') {
+                current_indicatif = '+33';
+                $('#edit-gsm').removeClass('validate[required,custom[onlyNumberSp],minSize[9],maxSize[10]]');
+                $('#edit-gsm').removeClass('validate[required,custom[onlyNumberSp],minSize[10],maxSize[10]]');
+                $('#edit-gsm').addClass('validate[required,custom[onlyNumberSp],minSize[9],maxSize[10]]');
+            } else if (current_pays === 'Italie') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Belgique') {
+                current_indicatif = '+32';
+            } else if (current_pays === 'Canada') {
+                current_indicatif = '+1';
+            } else if (current_pays === 'Espagne') {
+                current_indicatif = '+34';
+            } else if (current_pays === 'Algérie') {
+                current_indicatif = '+213';
+            } else if (current_pays === 'Allemagne') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Angola') {//
+                current_indicatif = '+';
+            } else if (current_pays === 'Antigua-et-Barbuda') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Arabie-saoudite') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Argentine') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Bénin') {//
+                current_indicatif = '+229';
+            } else if (current_pays === 'Bolivie') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Botswana') {//
+                current_indicatif = '+';
+            } else if (current_pays === 'Brésil') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Bulgarie') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Cameroun') {//
+                current_indicatif = '+';
+            } else if (current_pays === 'Afrique-du-Sud') {//
+                current_indicatif = '+';
+            } else if (current_pays === 'Cap-Vert') {//
+                current_indicatif = '+';
+            } else if (current_pays === 'Chili') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Chine') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Colombie') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Congo') {//
+                current_indicatif = '+243';
+            } else if (current_pays === 'Corée-du-Nord') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Croatie') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Côte-dIvoire') {//
+                current_indicatif = '+225';
+            } else if (current_pays === 'Danemark') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Égypte') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Équateur') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Albanie') {
+                current_indicatif = '+';
+            } else if (current_pays === 'États-Unis') {
+                current_indicatif = '+1';
+            } else if (current_pays === 'Finlande') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Gabon') { //
+                current_indicatif = '+241';
+            } else if (current_pays === 'Gambie') { //
+                current_indicatif = '+';
+            } else if (current_pays === 'Ghana') {//
+                current_indicatif = '+';
+            } else if (current_pays === 'Guinée') {//
+                current_indicatif = '+224';
+            } else if (current_pays === 'Guyana') {//
+                current_indicatif = '+';
+            } else if (current_pays === 'Inde') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Syrie') {
+                current_indicatif = '+963';
+            } else if (current_pays === 'Japon') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Jamaïque') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Mali') {
+                current_indicatif = '+223';
+            } else if (current_pays === 'Malte') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Maurice') {//
+                current_indicatif = '+';
+            } else if (current_pays === 'Mauritanie') {
+                current_indicatif = '+222';
+            } else if (current_pays === 'Niger') {//
+                current_indicatif = '+227';
+            } else if (current_pays === 'Nigéria') {//
+                current_indicatif = '+';
+            } else if (current_pays === 'Paraguay') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Pays-Bas') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Koweit') {
+                current_indicatif = '+965';
+            } else if (current_pays === 'Libye') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Malawi') {//
+                current_indicatif = '+';
+            } else if (current_pays === 'Norvege') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Mexique') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Oman') {
+                current_indicatif = '+968';
+            } else if (current_pays === 'Pakistan') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Portugal') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Qatar') {
+                current_indicatif = '+974';
+            } else if (current_pays === 'Russie') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Rwanda') {//
+                current_indicatif = '+';
+            } else if (current_pays === 'Sénégal') {//
+                current_indicatif = '+221';
+            } else if (current_pays === 'Serbie') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Somalie') {//
+                current_indicatif = '+';
+            } else if (current_pays === 'Soudan') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Suede') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Suisse') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Togo') {//
+                current_indicatif = '+228';
+            } else if (current_pays === 'Thailande') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Tunisie') {
+                current_indicatif = '+216';
+            } else if (current_pays === 'Turquie') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Ukraine') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Uruguay') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Venezuela') {
+                current_indicatif = '+';
+            } else if (current_pays === 'Yemen') {
+                current_indicatif = '+967';
+            } else if (current_pays === 'Zambie') {//
+                current_indicatif = '+';
+            } else if (current_pays === 'Zimbabwe') {//
+                current_indicatif = '+3';
+            } else if (current_pays === 'Tchad') {//
+                current_indicatif = '+235';
+            }
+        }
+
+//        if ($.inArray(current_pays, ['Tchad', 'Zimbabwe', 'Zambie', 'Togo', 'Somalie', 'Sénégal', 'Rwanda', 'Malawi', 'Niger', 'Nigéria', 'Maurice', 'Guinée', 'Guyana', 'Ghana', 'Gambie', 'Gabon', 'Côte-dIvoire', 'Congo', 'Cap-Vert', 'Afrique-du-Sud', 'Cameroun', 'Botswana', 'Bénin', 'Angola']) !== -1) {
+//            $('#edit-gsm').removeClass('validate[required,custom[onlyNumberSp],minSize[9],maxSize[10]]');
+//             $('#edit-gsm').removeClass('validate[required,custom[onlyNumberSp],,minSize[9],maxSize[9]]');
+// //            $('#edit-gsm').addClass('validate[required,custom[onlyNumberSp],minSize[8],maxSize[8]]');
+//             $('#edit-gsm').addClass('validate[required,custom[onlyNumberSp],minSize[9],maxSize[10]]');
+//        }
+        $('#edit-indicatif').val(current_indicatif);
+        if (current_indicatif == '+' || current_indicatif == ''){
+            $('#edit-indicatif').hide();
+            $('#edit-gsm').css('width', '100%').attr('maxlength', '12').removeClass("validate[required,custom[onlyNumberSp],minSize[9],maxSize[10]]").removeClass("validate[required,custom[onlyNumberSp],minSize[9],maxSize[9]]")
+                .addClass("validate[required,custom[onlyNumberSp], minSize[10]]");
+            $('#edit-gsm').attr('maxlength', '14');
+        }else{
+            $('#edit-gsm').css('width', '70%').attr('maxlength', '10')
+                .removeClass("validate[required,custom[onlyNumberSp], minSize[10]]");
+            $('#edit-indicatif').show();
+        }
+        if (current_pays === 'Maroc') {
+            $('#edit-gsm').removeClass('validate[required,custom[onlyNumberSp],minSize[9],maxSize[10]]');
+            $('#edit-gsm').removeClass('validate[required,custom[onlyNumberSp],minSize[10],maxSize[10]]');
+            $('#edit-gsm').removeClass('validate[required,custom[telephoneComplete], minSize[10]]');
+            $('#edit-gsm').addClass('validate[required,custom[onlyNumberSp],minSize[9],maxSize[9]]');
+        }
+
+
+        if(current_pays !== 'Maroc'){
+            $('#edit-ville-pays').removeClass( ['validate[required]'] );
+            $('#edit-ville').removeClass( ['validate[required]'] );
+        }else{
+            $('#edit-ville-pays').addClass( ['validate[required]'] );
+            $('#edit-ville').addClass( ['validate[required]'] );
+        }
+
+    });
+    $('input, textarea').placeholder();
+    $(".body-page-preinscription-desktop #uic-forms-preinscription-candidat-new #edit-gsm").blur(function () {
+        var current_tel = $(this).val();
+        var current_pays = $("#uic-forms-preinscription-candidat-new #edit-pays-preinscription").val();
+        if (current_pays === 'Maroc' && current_tel[0] !== '5' && current_tel[0] !== '6' && current_tel[0] !== '7') {
+            if (current_tel.length === 9)
+                $('body').append('<div class="formError edit-gsmformError" style="top: 330.75px; left: 1061.5px; margin-top: 0px; opacity: 0.87;"><div class="formErrorContent">* Numéro de téléphone invalide <br>* Ne pas mettre 0 en début du numéro<br></div><div class="formErrorArrow"><div class="line10"><!-- --></div><div class="line9"><!-- --></div><div class="line8"><!-- --></div><div class="line7"><!-- --></div><div class="line6"><!-- --></div><div class="line5"><!-- --></div><div class="line4"><!-- --></div><div class="line3"><!-- --></div><div class="line2"><!-- --></div><div class="line1"><!-- --></div></div></div>');
+        } /*else {
+            if ($('.formError.edit-gsmformError').length > 0)
+                $('body').remove('<div class="formError edit-gsmformError" style="top: 330.75px; left: 1061.5px; margin-top: 0px; opacity: 0.87;"><div class="formErrorContent">* Numéro de téléphone invalide <br>* Ne pas mettre 0 en début du numéro<br></div><div class="formErrorArrow"><div class="line10"><!-- --></div><div class="line9"><!-- --></div><div class="line8"><!-- --></div><div class="line7"><!-- --></div><div class="line6"><!-- --></div><div class="line5"><!-- --></div><div class="line4"><!-- --></div><div class="line3"><!-- --></div><div class="line2"><!-- --></div><div class="line1"><!-- --></div></div></div>');
+        }*/
+    });
+    var candidat_form_submited = false;
+    $('.body-page-preinscription-desktop #uic-forms-preinscription-candidat-new .form-submit, .body-page-preinscription-mobile #uic-forms-preinscription-candidat-new .form-submit').click(function () {
+        var current_tel = $('#edit-gsm').val();
+        if ($('#edit-pays-preinscription').val() === 'Maroc' && current_tel[0] !== '5' && current_tel[0] !== '6' && current_tel[0] !== '7') {
+            $('body').append('<div class="formError edit-gsmformError" style="top: 330.75px; left: 1061.5px; margin-top: 0px; opacity: 0.87;"><div class="formErrorContent">* Numéro de téléphone invalide <br>* Ne pas mettre 0 en début du numéro<br></div><div class="formErrorArrow"><div class="line10"><!-- --></div><div class="line9"><!-- --></div><div class="line8"><!-- --></div><div class="line7"><!-- --></div><div class="line6"><!-- --></div><div class="line5"><!-- --></div><div class="line4"><!-- --></div><div class="line3"><!-- --></div><div class="line2"><!-- --></div><div class="line1"><!-- --></div></div></div>');
+            return false;
+        }
+        var href = window.location.href;
+        //if ($("#uic-forms-preinscription-candidat-new").validationEngine({returnIsValid: true})) {
+        if ($("#uic-forms-preinscription-candidat-new").validationEngine('validate')) {
+            var profil_web = '';
+            if (href.indexOf("executive") > -1) {
+                if ((jQuery.inArray($('#edit-ville-pays').val(), ['Casablanca', 'Mohammedia']) != '-1') && (jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +4', 'Bac +5']) != '-1'))
+                    profil_web = (jQuery.inArray($('#edit-nb-anne-exper').val(), ['De 5 à  8 ans', 'plus de 8']) != '-1') ? 'FE_P1' : 'FE_P3';
+                else if ((jQuery.inArray($('#edit-ville-pays').val(), ['Casablanca', 'Mohammedia']) != '-1') && $('#edit-niveau-etude').val() == 'Bac +3')
+                    profil_web = (jQuery.inArray($('#edit-nb-anne-exper').val(), ['De 3 à  5 ans', 'De 5 à  8 ans', 'plus de 8']) != '-1') ? 'FE_P2' : 'FE_P4';
+                else if ((jQuery.inArray($('#edit-ville-pays').val(), ['Casablanca', 'Mohammedia']) != '-1') && $('#edit-niveau-etude').val() == 'Bac +2')
+                    profil_web = (jQuery.inArray($('#edit-nb-anne-exper').val(), ['De 5 à  8 ans', 'plus de 8']) != '-1') ? 'FE_P5' : 'FE_P6';
+                else if (jQuery.inArray($('#edit-ville-pays').val(), ['Casablanca', 'Mohammedia']) == '-1')
+                    profil_web = 'FE_P6';
+                if (profil_web != '')
+                    dataLayer.push({'event': profil_web});
+            } else if (href.indexOf("formation") > -1) {
+
+                var casaregion = ['Casablanca', 'Mohammedia', 'Settat', 'Berrechid', 'Rabat', 'El jadida', 'Kenitra', 'Temara', 'Skhirat', 'El Gara', 'Ben slimane', 'Sale', 'Deroua', 'Bouznika', 'El brouj', 'Harhoura'];
+
+                if ((jQuery.inArray($('#edit-niveau-etude').val(), ['2ème année bac marocain', 'Déjà bachelier']) != '-1') && (jQuery.inArray($('#edit-ville').val(), casaregion) != '-1')){
+                    if(jQuery.inArray($('#edit-lycee-bac').val(), ['ELBILIA', 'Lyautey', 'ALMADINA', 'LE PONT', 'EL MANAL', 'LA RESIDENCE', 'ENNOUR', 'YASSAMINE',
+                            'RAMEAU', 'CALIFORNIE', 'EIC (ORT)', 'Groupe Scolaire ANFA (Bennis)', 'LOUIS MASSIGNON', 'AL JABR', 'Groupe Scolaire TAZI II', 'Groupe scolaire Rahmouni potentiel',
+                            'Louis Bertrand', 'Groupe scolaire berrada', 'Groupe scolaire riad', 'CARREFOUR', 'ROMANDIE', 'MAIMONIDE', 'prépas Classes Préparatoires galilée',
+                            'Lycée Pythagore']) != '-1')
+                        profil_web =  'FI_B_P1';
+                    else{
+                        profil_web = 'FI_B_P4';
+                        $.each(lyceesprives, function (index, value) {
+                            if($('#edit-lycee-bac').val() === value)
+                                profil_web = 'FI_B_P2';
+                        });
+                    }
+                }else if ((jQuery.inArray($('#edit-niveau-etude').val(), ['2ème année bac marocain', 'Déjà bachelier']) != '-1') && (jQuery.inArray($('#edit-ville').val(), casaregion) == '-1') && $('#edit-lycee-bac').val() != ''){
+                    profil_web = 'FI_B_P5';
+                    $.each(lyceesprives, function (index, value) {
+                        if($('#edit-lycee-bac').val() === value)
+                            profil_web = 'FI_B_P3';
+                    });
+                }else if ((jQuery.inArray($('#edit-niveau-etude').val(), ['2ème année bac marocain', 'Déjà bachelier']) != '-1') && ($('#edit-pays-preinscription').val() != 'Maroc'))
+                    profil_web = 'Etranger_B';
+                else if ((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +1', 'Bac +2', 'Bac +3', 'Bac +4', 'Bac +5']) != '-1') && (jQuery.inArray($('#edit-ville').val(), casaregion) != '-1')){
+                    if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +1', 'Bac +2', 'Bac +3']) != '-1'))
+                        profil_web = 'FI_AP_P1';
+                    else if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +4']) != '-1'))
+                        profil_web = 'FI_AP_P3';
+                    else if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +5']) != '-1'))
+                        profil_web = 'FI_AP_P4';
+                }else if ((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +1', 'Bac +2', 'Bac +3', 'Bac +4', 'Bac +5']) != '-1') && (jQuery.inArray($('#edit-ville').val(), casaregion) == '-1') && $('#edit-pays-preinscription').val() == 'Maroc' ){
+                    if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +1', 'Bac +2', 'Bac +3']) != '-1'))
+                        profil_web = 'FI_AP_P2';
+                    else if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +4']) != '-1'))
+                        profil_web = 'FI_AP_P3';
+                    else if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +5']) != '-1'))
+                        profil_web = 'FI_AP_P4';
+                }else if((jQuery.inArray($('#edit-niveau-etude').val(), ['Bac +1', 'Bac +2', 'Bac +3', 'Bac +4', 'Bac +5']) != '-1') && $('#edit-pays-preinscription').val() != 'Maroc')
+                    profil_web = 'Etranger_AP';
+
+                if($('input[name=type_lycee]:checked').val() != undefined){
+                    if($('input[name=type_lycee]:checked').val() == 'Lycée Public')
+                        profil_web = 'Etrangers_Public';
+                    else
+                        profil_web = 'Etrangers_Privé';
+                }
+
+
+
+                if($('#edit-pays-preinscription').val() === 'Maroc'){
+                    $.ajax({
+                        dataType: "html",
+                        url: "/get-type-by-lycee/"+$('#edit-lycee-bac').val()+"/"+$('#edit-ville').val(),
+                        success: function(data) {
+                            Typelycee = (data.split('"').join('')).replace(/(\r\n|\n|\r)/gm,"");
+                            console.log(Typelycee);
+                            if( Typelycee == 'Privé') {
+                                if(jQuery.inArray($('#edit-ville').val(), ['El Jadida', 'Rabat', 'Settat'])){
+                                    profil_web = 'FI_9rayti';
+                                    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaa" + Typelycee);
+                                }
+                            }
+
+
+                            if (profil_web != '')
+                                dataLayer.push({'event': profil_web});
+                            console.log(profil_web);
+                        }
+                    });
+                }
+
+
+            }
+
+            if (href.indexOf("executive") > -1) {
+                dataLayer.push({'event': 'FE_All'});
+                dataLayer.push({'event': 'formation_executive'});
+            } else if (href.indexOf("formation") > -1) {
+                dataLayer.push({'event': 'FI_All'});
+            }
+            if (candidat_form_submited == false){
+                candidat_form_submited = true;
+            }else{
+                $('.body-page-preinscription-desktop #uic-forms-preinscription-candidat-new .form-submit, .body-page-preinscription-mobile #uic-forms-preinscription-candidat-new .form-submit').attr('disabled', 'disabled');
+            }
+
+            if (window.location.href.indexOf("journee-portes-ouvertes-24-mars") > -1){
+                dataLayer.push({'event': 'jpo0517'});
+            }
+
+        }
+    });
+    $('#edit-ville-pays-wrapper').hide();
+    $('#edit-ville-pays').removeClass('validate[required]');
+    if(window.location.href.indexOf("formation") > -1 || window.location.href.indexOf("journee-portes-ouvertes-24-mars") > -1){
+        $('#edit-ville-wrapper').hide();
+        $('#edit-lycee-bac-wrapper').hide();
+        $('.form-item-type-lycee').hide();
+        $('#edit-ville').removeClass('validate[required]');
+        $('#edit-lycee-bac').removeClass('validate[required]');
+    }
+    $('select[name="pays-preinscription"]').change(function () {
+        $('#edit-ville-pays-wrapper').hide();
+        $('#edit-ville-pays').removeClass('validate[required]');
+
+        if(window.location.href.indexOf("formation") > -1 || window.location.href.indexOf("journee-portes-ouvertes-24-mars") > -1){
+            $('#edit-ville-wrapper').hide();
+            $('#edit-lycee-bac-wrapper').hide();
+            $('.form-item-type-lycee').hide();
+            $('#edit-ville').removeClass('validate[required]');
+            $('#edit-lycee-bac').removeClass('validate[required]');
+            $('.form-item-type-lycee #edit-type-lycee-Lycée-Public').removeClass('validate[required]');
+            if ($(this).val() != "Maroc") {
+                    $('.form-item-type-lycee').show();
+                    $('.form-item-type-lycee #edit-type-lycee-Lycée-Public').addClass('validate[required]');
+            }
+        }
+        if ($(this).val() == "Maroc") {
+            $('#edit-ville-pays-wrapper').show();
+            $('#edit-ville-pays').addClass('validate[required]');
+
+            if(window.location.href.indexOf("formation") > -1 || window.location.href.indexOf("journee-portes-ouvertes-24-mars") > -1){
+                $('#edit-ville-wrapper').show();
+                $('#edit-lycee-bac-wrapper').show();
+                $('#edit-ville').addClass('validate[required]');
+                $('#edit-lycee-bac').addClass('validate[required]');
+            }
+        }
+    });   //lycéé
+    $('#uic-forms-preinscription-candidat-new #edit-ville').change(function () {
+        $('#edit-lycee-bac').html($(this).getLyceeByVille());
+    });
+
+    $.fn.getLyceeByVille = function () {
+        var currentVille = $(this).val();
+        currentVille = currentVille.trimRight();
+        var current_ville = lycees[currentVille];
+        var html_lycee = "<option value=''>Nom du lycée</option><option value='Autre'>Autre</option>";
+        $.each(current_ville, function (key, value) {
+            if (key != 'Autre') {
+                html_lycee += "<option value='" + key + "'>" + value + "</option>";
+            }
+        });
+        return html_lycee;
+    };
+
+    $.ajax({
+        dataType: "json",
+        url: "/lycees-by-ville",
+        success: success,
+        error: callbackError
+    });
+
+    function success(data, textStatus, jqXHR) {
+        lycees = data;
+        $.each(lycees, function (index, value) {
+            $.each(value, function (index_, value_) {
+                value[index_] = value_.replace('--',"'");
+            });
+        });
+    }
+
+    function callbackError( jqXHR,  textStatus,  errorThrown){
+        console.log(textStatus,errorThrown,jqXHR);
+    }
+
+    $.ajax({
+        dataType: "json",
+        url: "/lycees-prives",
+        success: succes,
+        error: callbackErrorr
+    });
+
+    function succes(data, textStatus, jqXHR) {
+        lyceesprives = data;
+        $.each(lyceesprives, function (index, value) {
+            value[index] = value.replace('--',"'");
+        });
+    }
+
+    function callbackErrorr( jqXHR,  textStatus,  errorThrown){
+        console.log(textStatus,errorThrown,jqXHR);
+    }
+//    var lyceess = [
+//        {"Casablanca": [{
+//                    'Autre': 'Autre',
+//                    'ALMADINA': 'ALMADINA',
+//                    'Abdel Aziz Elfachtali': 'Abdel Aziz Elfachtali',
+//                    'Abdelkhalek Torres': 'Abdelkhalek Torres',
+//                    'Abdelkrim Al Khattabi': 'Abdelkrim Al Khattabi',
+//                    'Abdelkrim El Khattabi': 'Abdelkrim El Khattabi',
+//                    'Abdelkrim Lahlou': 'Abdelkrim Lahlou',
+//                    'Abdellah El Ayachi': 'Abdellah El Ayachi',
+//                    'Abdellah El Mediouni': 'Abdellah El Mediouni',
+//                    'Abdelmalek Essaadi': 'Abdelmalek Essaadi',
+//                    'Abderrahmane Belkorchi': 'Abderrahmane Belkorchi',
+//                    'Abou Bakr Essedik': 'Abou Bakr Essedik',
+//                    'Abou Chouaib Eddoukali': 'Abou Chouaib Eddoukali',
+//                    'Abou Hayane Attaouhidi': 'Abou Hayane Attaouhidi',
+//                    'Addakhla': 'Addakhla',
+//                    'Ain Harrouda': 'Ain Harrouda',
+//                    'Al Farabi': 'Al Farabi',
+//                    'Al Imam Al Boukhari': 'Al Imam Al Boukhari',
+//                    'Al Joulane': 'Al Joulane',
+//                    'Al Khansa': 'Al Khansa',
+//                    'Al Khawarizmi': 'Al Khawarizmi',
+//                    'Al Masjid': 'Al Masjid',
+//                    'Al Ouaha': 'Al Ouaha',
+//                    'Al azhar': 'Al azhar',
+//                    'Alia Filles': 'Alia Filles',
+//                    'Allal Ben Abdellah': 'Allal Ben Abdellah',
+//                    'Almokhtar Assoussi': 'Almokhtar Assoussi',
+//                    'Amr Ibn Al Aass': 'Amr Ibn Al Aass',
+//                    'BERRADA': 'BERRADA',
+//                    'Badr': 'Badr',
+//                    'Baroudi': 'Baroudi',
+//                    'Ben Msik': 'Ben Msik',
+//                    'Bir Anzarane': ' Bir Anzarane',
+//                    'Bni Yakhlef': 'Bni Yakhlef',
+//                    'Bnou Roumi': 'Bnou Roumi',
+//                    'CALIFORNIE': 'CALIFORNIE',
+//                    'CARREFOUR': 'CARREFOUR',
+//                    'Chahid Driss Elhrizi': 'Chahid Driss Elhrizi',
+//                    'Chakib Arsalane': 'Chakib Arsalane',
+//                    'Chawqi': 'Chawqi',
+//                    'Driss El Harti': 'Driss El Harti',
+//                    'E.I.C Ecole internationale de Casablanca': 'E.I.C Ecole internationale de Casablanca',
+//                    'EL JABR': 'EL JABR',
+//                    'EL KHALIL': 'EL KHALIL',
+//                    'EL MANAL': 'EL MANAL',
+//                    'ELBILIA': 'ELBILIA',
+//                    'ENNOUR': 'ENNOUR',
+//                    'Ech Charif El Idrissi': 'Ech Charif El Idrissi',
+//                    'Ecole Américaine Georges Washington': 'Ecole Américaine Georges Washington',
+//                    'El Akkad': 'El Akkad',
+//                    'El Bakillani': 'El Bakillani',
+//                    'El Bouhtouri': 'El Bouhtouri',
+//                    'El Hidaya': 'El Hidaya',
+//                    'El Kadi Ayad': 'El Kadi Ayad',
+//                    'El Kindi': 'El Kindi',
+//                    'El Mansour Eddahbi': 'El Mansour Eddahbi',
+//                    'El Moatamid Bnou Abbad': 'El Moatamid Bnou Abbad',
+//                    'El Mokhtar Essoussi': 'El Mokhtar Essoussi',
+//                    'Elwaha': 'Elwaha',
+//                    'Ettayeb El Kammal': 'Ettayeb El Kammal',
+//                    'Fahda Bent Alaas': 'Fahda Bent Alaas',
+//                    'Fatima Al Fihria': 'Fatima Al Fihria',
+//                    'Fatima Azzahra': 'Fatima Azzahra',
+//                    'GROUPE SCOLAIRE BOURGOGNE': 'GROUPE SCOLAIRE BOURGOGNE',
+//                    'GS ANFA (Bennis)': 'GS ANFA (Bennis)',
+//                    'GS TAZI II': 'GS TAZI II',
+//                    'GS VERDUN': 'GS VERDUN',
+//                    'HENRI MATISS': 'HENRI MATISS',
+//                    'Hassan Bnou Tabit': 'Hassan Bnou Tabit',
+//                    'Hassan II': 'Hassan II',
+//                    'Hassan Ibn Tabit': 'Hassan Ibn Tabit',
+//                    'Houssain Bnou Ali': 'Houssain Bnou Ali',
+//                    'IBA': 'IBA',
+//                    'Ibn Al Yassamine': 'Ibn Al Yassamine',
+//                    'Ibn Batouta': 'Ibn Batouta',
+//                    'Ibn El Haytam': 'Ibn El Haytam',
+//                    'Ibn Khaldoune': 'Ibn Khaldoune',
+//                    'Ibn Rochd': 'Ibn Rochd',
+//                    'Ibn Toumert': 'Ibn Toumert',
+//                    'Ibn Yassine': 'Ibn Yassine',
+//                    'Ibn Zaydoune': 'Ibn Zaydoune',
+//                    'Ibnou Al Aouam': 'Ibnou Al Aouam',
+//                    'Ibnou Al Banna Al Mourakouchi': 'Ibnou Al Banna Al Mourakouchi',
+//                    'Ibnou Al Haitam': 'Ibnou Al Haitam',
+//                    'Ibnou Al Mouataz': 'Ibnou Al Mouataz',
+//                    'Ibnou Arabi': 'Ibnou Arabi',
+//                    'Ibnou Chouhaid': 'Ibnou Chouhaid',
+//                    'Ibnou Mandour': 'Ibnou Mandour',
+//                    'Ibnou Rochd': 'Ibnou Rochd',
+//                    'Imam Malik': 'Imam Malik',
+//                    'Jaafar El Fassi': 'Jaafar El Fassi',
+//                    'Jaber Ben Hayane': 'Jaber Ben Hayane',
+//                    'Jaber Bnou Hayane': 'Jaber Bnou Hayane',
+//                    'Jamal Eddine Al Mahyaoui': 'Jamal Eddine Al Mahyaoui',
+//                    'Khadiha Oum Al Mouminine': 'Khadiha Oum Al Mouminine',
+//                    'LA PLEIADE': 'LA PLEIADE',
+//                    'LA RESIDENCE': 'LA RESIDENCE',
+//                    'LE CEDRE': 'LE CEDRE',
+//                    'LE PONT': 'LE PONT',
+//                    'LEON AFRICAIN': 'LEON AFRICAIN',
+//                    'LES PALMIERS': 'LES PALMIERS',
+//                    'LOUIS MASSIGNON': 'LOUIS MASSIGNON',
+//                    'LYAUTEY': 'LYAUTEY',
+//                    'LYCEE L\'UNION': 'LYCEE L\'UNION',
+//                    'Lamsalla': 'Lamsalla',
+//                    'Louis Bertrand': 'Louis Bertrand',
+//                    'Louis de Broglie': 'Louis de Broglie',
+//                    'Lycée des sportifs': 'Lycée des sportifs',
+//                    'MAIMONIDE': 'MAIMONIDE',
+//                    'MALAIKA': 'MALAIKA',
+//                    'MANDARONA': 'MANDARONA',
+//                    'Mohamed V': 'Mohamed V',
+//                    'Mohamed VI': 'Mohamed VI',
+//                    'Mohamed VI ': 'Mohamed VI',
+//                    'Mohamed Zerktouni': 'Mohamed Zerktouni',
+//                    'Mokhtar Soussi': 'Mokhtar Soussi',
+//                    'Mostafa Lamaani': 'Mostafa Lamaani',
+//                    'Moulay Abdellah': 'Moulay Abdellah',
+//                    'Moulay IDriss I': 'Moulay IDriss I',
+//                    'Moulay Idriss': 'Moulay Idriss',
+//                    'Moulay Ismail': 'Moulay Ismail',
+//                    'Moulay Youssef': 'Moulay Youssef',
+//                    'NOOR': 'NOOR',
+//                    'OMAR EL FAROUK': 'OMAR EL FAROUK ',
+//                    'ORT': 'ORT',
+//                    'Okba  Bnou Nafii': 'Okba  Bnou Nafii',
+//                    'Omar Bnou Al Khattab': 'Omar Bnou Al Khattab',
+//                    'Othmane Ben Affane': 'Othmane Ben Affane',
+//                    'Othmane Bnou Affane': 'Othmane Bnou Affane',
+//                    'Oued Eddahab': 'Oued Eddahab',
+//                    'Ouled Salah': 'Ouled Salah',
+//                    'Oullada': 'Oullada',
+//                    'Oum Al Banine': 'Oum Al Banine',
+//                    'RAMEAU': 'RAMEAU',
+//                    'RIAD': 'RIAD',
+//                    'ROMANDIE': 'ROMANDIE',
+//                    'Ramon Jimenez': 'Ramon Jimenez',
+//                    'Salaheddine Al Ayoubi': 'Salaheddine Al Ayoubi',
+//                    'Taha Houssein': 'Taha Houssein',
+//                    'Taoufik Hakim': 'Taoufik Hakim',
+//                    'Tarek Ibn Ziad': 'Tarek Ibn Ziad',
+//                    'YASSAMINE': 'YASSAMINE',
+//                    'YASSAMINE CALIFORNIE': 'YASSAMINE CALIFORNIE',
+//                    'YASSAMINE OASIS': 'YASSAMINE OASIS',
+//                    'Zeryab': 'Zeryab',
+//                    'Zineb Enafzawia': 'Zineb Enafzawia',
+//                    'Zineb Ennafzaouya': 'Zineb Ennafzaouya'
+//                }],
+//            "Rabat": [{
+//                    'Autre': 'Autre',
+//                    'ATLAS': 'ATLAS',
+//                    'Abdelkrim Al Khattabi': 'Abdelkrim Al Khattabi',
+//                    'Abdellah Guennoune': 'Abdellah Guennoune',
+//                    'Abderrahmane Belkorchi': 'Abderrahmane Belkorchi',
+//                    'Abi Bakr Essaddik': 'Abi Bakr Essaddik ',
+//                    'Abider Alghifari': 'Abider Alghifari',
+//                    'Abokrat': 'Abokrat',
+//                    'Acharif Alidrisse': 'Acharif Alidrisse',
+//                    'Al Manbaa': 'Al Manbaa',
+//                    'Al Manbah': 'Al Manbah',
+//                    'Al minbat Boutaleb': 'Al minbat Boutaleb',
+//                    'Alal Al Fassi': 'Alal Al Fassi',
+//                    'Allal El Fassi': 'Allal El Fassi',
+//                    'Allaymoune': 'Allaymoune',
+//                    'Almalqy': 'Almalqy',
+//                    'André Malraux': 'André Malraux',
+//                    'Belbachir': 'Belbachir',
+//                    'Ben M\'Barek': 'Ben M\'Barek',
+//                    'Ben MBarek': 'Ben MBarek',
+//                    'Claude Bernard': 'Claude Bernard',
+//                    'Colegio Espanol Clara Campoamor': 'Colegio Espanol Clara Campoamor',
+//                    'Dar Essalam': 'Dar Essalam',
+//                    'Descartes': 'Descartes',
+//                    'GALILEO': 'GALILEO',
+//                    'GROUPE SCOLAIRE AL MOUBADARA': 'GROUPE SCOLAIRE AL MOUBADARA',
+//                    'GROUPE SCOLAIRE AL MOUWATANA': 'GROUPE SCOLAIRE AL MOUWATANA',
+//                    'Groupe Scolaire Azzhar': 'Groupe Scolaire Azzhar',
+//                    'Groupe Scolaire Essabil': 'Groupe Scolaire Essabil',
+//                    'Groupe Scolaire OLM SOUISSI': 'Groupe Scolaire OLM SOUISSI',
+//                    'Groupe Scolaire Riad Al Maarifa': 'Groupe Scolaire Riad Al Maarifa',
+//                    'Gustave Flaubert': 'Gustave Flaubert',
+//                    'HIGH TECH': 'HIGH TECH',
+//                    'Hassan II': 'Hassan II',
+//                    'Hoummane Alfatwaki': 'Hoummane Alfatwaki',
+//                    'Ibn Battouta': 'Ibn Battouta',
+//                    'Ibn Rochd': 'Ibn Rochd',
+//                    'Ibn Sina': 'Ibn Sina',
+//                    'Ibrahim Arroudani': 'Ibrahim Arroudani',
+//                    'LES FRAMBOISES': 'LES FRAMBOISES',
+//                    'LOUIS LE GRAND': 'LOUIS LE GRAND',
+//                    'LTC': 'LTC',
+//                    'LYCEE SCIENTIFIQUE': 'LYCEE SCIENTIFIQUE',
+//                    'Lalla Aicha': 'Lalla Aicha',
+//                    'Lalla Nezha': 'Lalla Nezha',
+//                    'Larbi Doghmi': 'Larbi Doghmi',
+//                    'Le Petit Collége': 'Le Petit Collége',
+//                    'Les écoles scientifiques Mariotte': 'Les écoles scientifiques Mariotte',
+//                    'Lycée Amir Moulay Rachid': 'Lycée Amir Moulay Rachid',
+//                    'Lycée Militaire': 'Lycée Militaire',
+//                    'MAATI BOUABID': 'MAATI BOUABID',
+//                    'MADARISS AL HASSANIA': 'MADARISS AL HASSANIA',
+//                    'MADARISS MOHAMED V': 'MADARISS MOHAMED V',
+//                    'Mansour Eddahbi': 'Mansour Eddahbi',
+//                    'Mohamed Al Khamis': 'Mohamed Al Khamis',
+//                    'Moulay Abdellah': 'Moulay Abdellah',
+//                    'Moulay Youssef': 'Moulay Youssef',
+//                    'Omar Al khiyame': 'Omar Al khiyame',
+//                    'Rabat American school': 'Rabat American school',
+//                    'SCIENCE CITY': 'SCIENCE CITY',
+//                    'TARIK BNOU ZIAD': 'TARIK BNOU ZIAD',
+//                    'TARIK IBN ZYAD': 'TARIK IBN ZYAD',
+//                    'Tarik Ibn Ziyad': 'Tarik Ibn Ziyad',
+//                    'Thomas Edison': 'Thomas Edison',
+//                    'thomas edisson': 'thomas edisson'
+//                }],
+//            "Agadir": [{
+//                    'Autre': 'Autre',
+//                    'AL Fath': 'AL Fath',
+//                    'Abadilah Najah': 'Abadilah Najah',
+//                    'Abdelkrim El Khattabi': 'Abdelkrim El Khattabi',
+//                    'Abdellah Ben yassine': 'Abdellah Ben yassine',
+//                    'Abdellah Chefchaouni': 'Abdellah Chefchaouni',
+//                    'Abdellah yassine': 'Abdellah yassine',
+//                    'Al Idrissi Technique': 'Al Idrissi Technique',
+//                    'Al Imam Al Boukhari': 'Al Imam Al Boukhari',
+//                    'Al Jadida': 'Al Jadida',
+//                    'Al Joulane': 'Al Joulane',
+//                    'Al Khalij': 'Al Khalij',
+//                    'Al Khawarizmi': 'Al Khawarizmi',
+//                    'Al Maarifa': 'Al Maarifa',
+//                    'Al Majd': 'Al Majd',
+//                    'Al Massira': 'Al Massira',
+//                    'Alal Al Fassi': 'Alal Al Fassi',
+//                    'Almokhtar Assoussi': 'Almokhtar Assoussi',
+//                    'Anoual': 'Anoual',
+//                    'Badr': 'Badr',
+//                    'El Haj Said': 'El Haj Said',
+//                    'Essalam': 'Essalam',
+//                    'Groupe Scolaire Al Qalam': 'Groupe Scolaire Al Qalam',
+//                    'IBN ZOHR': 'IBN ZOHR',
+//                    'Institut Al Hanane Privé': 'Institut Al Hanane Privé',
+//                    'Kastalani': 'Kastalani',
+//                    'Lycée FranÃ§ais': 'Lycée FranÃ§ais',
+//                    'Lycée Maria': 'Lycée Maria',
+//                    'Mohemed El Bekali': 'Mohemed El Bekali',
+//                    'Sentier de la réussite': 'Sentier de la réussite',
+//                    'YASSAMINE': 'YASSAMINE',
+//                    'Youssef Bnou Tachfin': 'Youssef Bnou Tachfin',
+//                    'Youssef Bnoutachfine': 'Youssef Bnoutachfine',
+//                    'Zerktouni': 'Zerktouni'
+//                }],
+//            "El jadida": [{
+//                    'Autre': 'Autre',
+//                    'Abou Chouaib Doukkali': 'Abou Chouaib Doukkali',
+//                    'Al Qods': 'Al Qods',
+//                    'Al amine': 'Al amine',
+//                    'Allaymoune': 'Allaymoune',
+//                    'Amine': 'Amine',
+//                    'Azzaitoun': 'Azzaitoun',
+//                    'Bir Anzarane': 'Bir Anzarane',
+//                    'Chawki': 'Chawki',
+//                    'ENNOUR': 'ENNOUR',
+//                    'El Kadi Ayad': 'El Kadi Ayad',
+//                    'El Qods': 'El Qods',
+//                    'Gs ilyas': 'Gs ilyas',
+//                    'Ibn Khaldoun': 'Ibn Khaldoun',
+//                    'Ibn khaldoune': 'Ibn khaldoune',
+//                    'Ibnou Rochd': 'Ibnou Rochd',
+//                    'Imam El Boukhari': 'Imam El Boukhari',
+//                    'Jean Charcot': 'Jean Charcot',
+//                    'Lycée Ange Bleu': 'Lycée Ange Bleu',
+//                    'Lycée Azzaytouna': 'Lycée Azzaytouna',
+//                    'Lycée Charcot': 'Lycée Charcot',
+//                    'Lycée Ennour': 'ycée Ennour',
+//                    'Lycée Ihssane': 'Lycée Ihssane',
+//                    'Lycée Technique Razi': 'Lycée Technique Razi',
+//                    'Oum Errabia': 'Oum Errabia'
+//                }],
+//            "Marrakech": [{
+//                    'Autre': 'Autre',
+//                    'ARIHA': 'ARIHA',
+//                    'Abattih': 'Abattih',
+//                    'Abdellah Ibrahim': 'Abdellah Ibrahim',
+//                    'Abi El Abbas Essabti': 'Abi El Abbas Essabti',
+//                    'Abi El Abbas Sebti': 'Abi El Abbas Sebti',
+//                    'Addoha': 'Addoha',
+//                    'Al Khaouarizmi': 'Al Khaouarizmi',
+//                    'Al Khawarizmi': 'Al Khawarizmi',
+//                    'Al Mouahdine': 'Al Mouahdine',
+//                    'Aouda Saadia': 'Aouda Saadia',
+//                    'Azzahra': 'Azzahra',
+//                    'BIRANZARANE': 'BIRANZARANE',
+//                    'Bachir': 'Bachir',
+//                    'Ben Youssef': 'Ben Youssef',
+//                    'CHKILI': 'CHKILI',
+//                    'EL MANAR': 'EL MANAR',
+//                    'ELMANAL': 'EL MANAL',
+//                    'ETABLISSEMENT HILALI': 'ETABLISSEMENT HILALI',
+//                    'Ecole Royale De l\'air': 'Ecole Royale De l\'air',
+//                    'Ecole technique de la Befra': 'Ecole technique de la Befra',
+//                    'El Kadi Ayad': 'El Kadi Ayad',
+//                    'El Khaouarizmi': 'El Khaouarizmi',
+//                    'GROUPE SCOLAIRE AL OMAM': 'GROUPE SCOLAIRE AL OMAM',
+//                    'Groupe Scolaire Elaraki': 'Groupe Scolaire Elaraki',
+//                    'Groupe Scolaire Zola': 'Groupe Scolaire Zola',
+//                    'Groupe Scolaire la Source': 'Groupe Scolaire la Source',
+//                    'Hassan II': 'Hassan II',
+//                    'Hassane Ben Tabit': 'Hassane Ben Tabit',
+//                    'INSTITUT DU SUD': 'INSTITUT DU SUD',
+//                    'INSTITUTION LAMRANI': 'INSTITUTION LAMRANI',
+//                    'Ibn Abbad': 'Ibn Abbad',
+//                    'Ibn El Haytam': 'Ibn El Haytam',
+//                    'Ibn Khaldoun': 'Ibn Khaldoun',
+//                    'Ibn Sina': 'Ibn Sina',
+//                    'Ibn Toumert': 'Ibn Toumert',
+//                    'Ibnou Almouataz': 'Ibnou Almouataz',
+//                    'Ibnou Sina': 'Ibnou Sina',
+//                    'JABRANE': 'JABRANE',
+//                    'Koutoubia': 'Koutoubia',
+//                    'Lamhamid 9': 'Lamhamid 9',
+//                    'Le Maghreb Arabe': 'Le Maghreb Arabe',
+//                    'Lycee Hassan II': 'Lycee Hassan II',
+//                    'Lycée Mohammed V': 'Lycée Mohammed V',
+//                    'Mohamed V- Bab Ghmat': 'Mohamed V- Bab Ghmat',
+//                    'Mohamed VI': 'Mohamed VI',
+//                    'Moussa Bnou Noussair': 'Moussa Bnou Noussair',
+//                    'NOUR EL MOHAMMADIA': 'NOUR EL MOHAMMADIA',
+//                    'Prince Héritier Mly El Hassan': 'Prince Héritier Mly El Hassan',
+//                    'SIDI BOUATHMANE': 'SIDI BOUATHMANE',
+//                    'Sahnoune': 'Sahnoune ',
+//                    'Salah Din Ayoubi': 'Salah Din Ayoubi',
+//                    'Salah Eddine El Ayoubi': 'Salah Eddine El Ayoubi',
+//                    'Sidi Abderrahmane': 'Sidi Abderrahmane',
+//                    'Victor Hugo': 'Victor Hugo',
+//                    'Youssef Ben Tachfine': 'Youssef Ben Tachfine',
+//                    'Zerktouni': 'Zerktouni',
+//                    'les printemps': 'les printemps'
+//                }],
+//            "Meknès": [{
+//                    'Autre': 'Autre',
+//                    'Abderrahmane Ibn Zidane': 'Abderrahmane Ibn Zidane',
+//                    'Abou Bakr Essidik': 'Abou Bakr Essidik',
+//                    'Ain Jemaa': 'Ain Jemaa',
+//                    'Ain Karma': 'Ain Karma',
+//                    'Al Marijia': 'Al Marijia',
+//                    'Azzaitoun': 'Azzaitoun',
+//                    'Badr': 'Badr',
+//                    'Belle vue': 'Belle vue',
+//                    'Donald\'Schools': 'Donald\'Schools',
+//                    'El Manfalouti': 'El Manfalouti',
+//                    'Essalam': 'Essalam',
+//                    'Flowers Hight school': 'Flowers Hight school',
+//                    'Groupe Scolaire Al amana': 'Groupe Scolaire Al amana',
+//                    'Groupe Scolaire Amana': 'Groupe Scolaire Amana',
+//                    'Groupe Scolaire Emile ': 'Groupe Scolaire Emile',
+//                    'HASSAN II': 'HASSAN II',
+//                    'Hoummane el fetouaki': 'Hoummane el fetouaki',
+//                    'Ibn Al Haythem': 'Ibn Al Haythem',
+//                    'Ibn Hamdoune Kertili': 'Ibn Hamdoune Kertili',
+//                    'Ibnou Arroumi': 'Ibnou Arroumi',
+//                    'Imam Ghazali': 'Imam Ghazali',
+//                    'Institut Laraichi ': 'Institut Laraichi',
+//                    'Kasbat': 'Kasbat',
+//                    'Khawarizmi': 'Khawarizmi',
+//                    'La preference': 'La preference',
+//                    'Label Exellence': 'Label Exellence',
+//                    'Lalla Amina': 'Lalla Amina',
+//                    'Le bastion': 'Le bastion',
+//                    'Lycée Bellevue': 'Lycée Bellevue',
+//                    'Lycée Ibn Taher': 'Lycée Ibn Taher',
+//                    'Lycée Ibn Taher El Ghazi El Meknassi': 'Lycée Ibn Taher El Ghazi El Meknassi',
+//                    'Lycée La Préférence': 'Lycée La Préférence',
+//                    'Lycée Mohammed V': 'Lycée Mohammed V',
+//                    'Lycée Polysciences': 'Lycée Polysciences',
+//                    'Lycée de l\'académie royale MILI': 'Lycée de l\'académie royale MILI',
+//                    'Malika El Fassi': 'Malika El Fassi',
+//                    'Massira': 'Massira',
+//                    'Mhaya': 'Mhaya',
+//                    'Mohamed Ajana': 'Mohamed Ajana',
+//                    'Mohamed El Meknassi': 'Mohamed El Meknassi',
+//                    'Mohamed V': 'Mohamed V',
+//                    'Moulay Ismail': 'Moulay Ismail',
+//                    'Moulay Youssef': 'Moulay Youssef',
+//                    'Omar Ibn Al Khattab': 'Omar Ibn Al Khattab',
+//                    'Omar ibn al khattal': 'Omar ibn al khattal',
+//                    'Organisation Alaouite d\'aveugles': 'Organisation Alaouite d\'aveugles',
+//                    'Oued el Makhazine': 'Oued el Makhazine',
+//                    'Paul Valéry': 'Paul Valéry',
+//                    'TARIK BNOU ZIAD': 'TARIK BNOU ZIAD',
+//                    'Tarik Ben Zyad': 'Tarik Ben Zyad',
+//                    'YASSAMINE': 'YASSAMINE',
+//                    'Zitoune': 'Zitoune'
+//                }],
+//            "Fès": [{
+//                    'Autre': 'Autre',
+//                    'ABD Lah Kanoun': 'ABD Lah Kanoun',
+//                    'Abd Lah Chefchawni': 'Abd Lah Chefchawni',
+//                    'Abdelkarim Rais': 'Abdelkarim Rais',
+//                    'Abdelkrim Daoudi': 'Abdelkrim Daoudi',
+//                    'Adarissa': 'Adarissa',
+//                    'Al Karaweine': 'Al Karaweine',
+//                    'Al cachy': 'Al cachy',
+//                    'Alal Al Fassi': 'Alal Al Fassi',
+//                    'Alale alwdie': 'Alale alwdie',
+//                    'Alkhanssae': 'Alkhanssae',
+//                    'Almaahad Aljadid Liriyate': 'Almaahad Aljadid Liriyate',
+//                    'CEGEP': 'CEGEP',
+//                    'Groupe Scolaire Oum Al Koura': 'Groupe Scolaire Oum Al Koura',
+//                    'Groupe Scolaire Saiss': 'Groupe Scolaire Saiss',
+//                    'Groupe Scolaire Taiba': 'Groupe Scolaire Taiba',
+//                    'IPEP': 'IPEP',
+//                    'Ibn Baja': 'Ibn Baja',
+//                    'Ibn Hani': 'Ibn Hani',
+//                    'Ibn Haytam': 'Ibn Haytam',
+//                    'Ibn Hazm': 'Ibn Hazm',
+//                    'Ibn Khaldoune': 'Ibn Khaldoune',
+//                    'Ibn Rochd': 'Ibn Rochd',
+//                    'Ibn Sina': 'Ibn Sina',
+//                    'Ibn Soudan': 'Ibn Soudan',
+//                    'Kelvin High School': 'Kelvin High School',
+//                    'Lamassira': 'Lamassira',
+//                    'Lycée Al Jabr': 'Lycée Al Jabr',
+//                    'Lycée Attawfik': 'Lycée Attawfik',
+//                    'Lycée Kounouz': 'Lycée Kounouz',
+//                    'Lycée Moulay Driss': 'Lycée Moulay Driss',
+//                    'Lycée Oméga': 'Lycée Oméga',
+//                    'Lycée la Résidence': 'Lycée la Résidence',
+//                    'Lycée technique Fès': 'Lycée technique ès',
+//                    'Maydane alforosia': 'aydane alforosia',
+//                    'Moulay Abd Salam Ibn Mch': 'Moulay Abd Salam Ibn Mch',
+//                    'Moulay Driss': 'Moulay Driss',
+//                    'Moulay Idriss': 'Moulay Idriss',
+//                    'Moulay Rachid': 'Moulay Rachid',
+//                    'Moulay Slimane': 'Moulay Slimane',
+//                    'Oum Lebanon': 'Oum Lebanon',
+//                    'Oumou Ayman': 'Oumou Ayman',
+//                    'Prépa Al Khayam': 'Prépa Al Khayam',
+//                    'Salah Din Ayoubi': 'Salah Din Ayoubi',
+//                    'Sidi Ibrahim': 'Sidi Ibrahim',
+//                    'Touria Sekkat': 'Touria Sekkat',
+//                    'Youssef Ibn tachfine': 'Youssef Ibn tachfine'
+//                }],
+//            "Al Houceima": [{
+//                    'Autre': 'Autre',
+//                    'Al Badissi': 'Al Badissi',
+//                    'Al wahda': 'Al wahda',
+//                    'Imzouren': 'Imzouren',
+//                    'Moulay Ali Cherif': 'Moulay Ali Cherif',
+//                    'TARIK BNOU ZIAD': 'TARIK BNOU ZIAD'
+//                }],
+//            "Beni Mellal": [{
+//                    'Autre': 'Autre',
+//                    'Al Amrya': 'Al Amrya',
+//                    'Al Atlas': 'Al Atlas',
+//                    'Al Khawarizmi': 'Al Khawarizmi',
+//                    'Al Massira': 'Al Massira',
+//                    'Al maarij': 'Al maarij',
+//                    'Attouffah': 'Attouffah',
+//                    'Bir Anzaran': 'Bir Anzaran',
+//                    'Hassan II': 'Hassan II',
+//                    'Ibn Sina': 'Ibn Sina',
+//                    'Ibnou Sina': 'Ibnou Sina',
+//                    'Kad': 'Kad',
+//                    'Lycée Mohammed V': 'Lycée Mohammed V',
+//                    'Moha ou Hammou': 'Moha ou Hammou',
+//                    'Mohamed V': 'Mohamed V',
+//                    'Moulay Ismail': 'Moulay Ismail',
+//                    'Moulay Rachid': 'Moulay Rachid',
+//                    'baja': 'baja',
+//                    'maarif': 'maarif'
+//                }],
+//            "Berrechid": [{
+//                    'Autre': 'Autre',
+//                    'Al Khawarizmi': 'Al Khawarizmi',
+//                    'Al Manbat': 'Al Manbat',
+//                    'El Maghrib Al Arabi': 'El Maghrib Al Arabi',
+//                    'GS Houriya': 'GS Houriya',
+//                    'Groupe Scolaire Berrada': 'Groupe Scolaire Berrada',
+//                    'Hassan II': 'Hassan II',
+//                    'Ibn Rochd': 'Ibn Rochd',
+//                    'Imam Malik': 'Imam Malik',
+//                    'Lycée Berrechid': 'Lycée Berrechid',
+//                    'Lycée Pépinière': 'Lycée Pépinière',
+//                    'Othmane Ben Affane': 'Othmane Ben Affane',
+//                    'Oulad Hriz': 'Oulad Hriz',
+//                    'Yassamine': 'Yassamine',
+//                    'college lycee berrechid': 'college lycee berrechid',
+//                    'hassan ben tabit': 'hassan ben tabit',
+//                    'iqrae': 'iqrae'
+//                }],
+//            "Chtouka Ait Baha": [{
+//                    'Autre': 'Autre',
+//                    'Al Joulane': 'Al Joulane',
+//                    'Aljoualane': 'Aljoualane',
+//                    'El Fadila': 'El Fadila'
+//                }],
+//            "Essaouira": [{
+//                    'Autre': 'Autre',
+//                    'Akensous': 'Akensous',
+//                    'Al Amal': 'Al Amal',
+//                    'Almajd': 'Almajd',
+//                    'Argane': 'Argane',
+//                    'Mohamed V': 'Mohamed V',
+//                    'Nawras Mogador': 'Nawras Mogador',
+//                    'Prince Moulay Rachid': 'Prince Moulay Rachid',
+//                    'Sidi Mohammed Abdellah': 'Sidi Mohammed Abdellah',
+//                    'Talmest': 'Talmest'
+//                }],
+//            "Fes Zouagha Mly Yacoub": [{
+//                    'Autre': 'Autre',
+//                    'Abbas Al amrani': 'Abbas Al amrani',
+//                    'Ahmed Zaki El Alaoui': 'Ahmed Zaki El Alaoui'
+//                }],
+//            "Fkih Ben Salah": [{
+//                    'Autre': 'Autre',
+//                    'Agricole': 'Agricole',
+//                    'Al Kindi': 'Al Kindi',
+//                    'Allal Ben Abdellah': 'Allal Ben Abdellah',
+//                    'Annasr': 'Annasr',
+//                    'Bir anzarane': 'Bir anzarane',
+//                    'El Farabi': 'El Farabi',
+//                    'El Khawarezmi': 'El Khawarezmi',
+//                    'Hassan I': 'Hassan I'
+//                }],
+//            "Kenitra": [{
+//                    'Autre': 'Autre',
+//                    'Abderrahman Nacer': 'Abderrahman Nacer',
+//                    'Abi Hayan Atawhidi': 'Abi Hayan Atawhidi',
+//                    'BENNIS': 'BENNIS',
+//                    'Groupe Scolaire Zghari': 'Groupe Scolaire Zghari',
+//                    'Ibn Abbad': 'Ibn Abbad',
+//                    'Ibn El Haytam': 'Ibn El Haytam',
+//                    'Ibn Zaydoune': 'Ibn Zaydoune',
+//                    'LYCEE MAJD': 'LYCEE MAJD',
+//                    'La reference': 'La reference',
+//                    'Le pont': 'Le pont',
+//                    'Lycee ibnou sina': 'Lycee ibnou sina',
+//                    'Mohamed V': 'Mohamed V',
+//                    'Nour Arrachad': 'Nour Arrachad',
+//                    'PALMERAIE': 'PALMERAIE',
+//                    'Ryad Al Maarifa': 'Ryad Al Maarifa',
+//                    'Sindibad': 'Sindibad',
+//                    'VAL FLEURY': 'VAL FLEURY',
+//                    'lycée abdelmalek as saadi': 'lycée abdelmalek as saadi',
+//                    'lycée almassira': 'lycée almassira',
+//                    'lycée cognito': 'lycée cognito',
+//                    'lycée ibno battouta': 'lycée ibno battouta',
+//                    'lycée idriss alaoual': 'lycée idriss alaoual',
+//                    'lycée militaire': 'lycée militaire',
+//                    'lycée mohamed 5': 'lycée mohamed 5',
+//                    'lycée taha hossain': 'lycée taha hossain',
+//                    'lycée technique': 'lycée technique'
+//                }],
+//            "Khouribga": [{
+//                    'Autre': 'Autre',
+//                    'AL KHATTABI': 'AL KHATTABI',
+//                    'Abdelkrim El Khattabi': 'Abdelkrim El Khattabi',
+//                    'Abdellah Guennoune': 'Abdellah Guennoune',
+//                    'Abou Bakr Essidik': 'Abou Bakr Essidik',
+//                    'Achchourouk': 'Achchourouk',
+//                    'Al Azhar': 'Al Azhar',
+//                    'Al Farabi': 'Al Farabi',
+//                    'Al Massira': 'Al Massira',
+//                    'Al Mouahidine': 'Al Mouahidine',
+//                    'Dakhla': 'Dakhla',
+//                    'El Mokhtar Essoussi': 'El Mokhtar Essoussi',
+//                    'El Mokhtar Soussi': 'El Mokhtar Soussi',
+//                    'Ibn Abdoun': 'Ibn Abdoun',
+//                    'Ibn Rochd': 'Ibn Rochd',
+//                    'Ibn Tofail': 'Ibn Tofail',
+//                    'Ibn Yassine': 'Ibn Yassine',
+//                    'Ibnou El Banne': 'Ibnou El Banne',
+//                    'Ibnou Toumert': 'Ibnou Toumert',
+//                    'Imam Ali': 'Imam Ali',
+//                    'Ouardigha': 'Ouardigha',
+//                    'Phosphate': 'Phosphate',
+//                    'Tachrafet': 'Tachrafet',
+//                    'Youssef Bnoutachfine': 'Youssef Bnoutachfine',
+//                    'Youssef Ibn Tachfine': 'Youssef Ibn Tachfine'
+//                }],
+//            "Laayoune": [{
+//                    'Autre': 'Autre',
+//                    'Ahmed Ben Mohamed Errachdi': 'Ahmed Ben Mohamed Errachdi',
+//                    'Al amine': 'Al amine',
+//                    'Lycée Hassan 2': 'Lycée Hassan 2',
+//                    'Lycée Pythagore': 'Lycée Pythagore',
+//                    'Lycée qualifiant Lissane Eddine': 'Lycée qualifiant Lissane Eddine',
+//                    'Lycée qualifiant Mohamed V': 'Lycée qualifiant Mohamed V'
+//                }],
+//            "Mohammedia": [{
+//                    'Autre': 'Autre',
+//                    'Abdelkrim El Khattabi': 'Abdelkrim El Khattabi',
+//                    'Ain Harrouda': 'Ain Harrouda',
+//                    'Al Joulane': 'Al Joulane',
+//                    'Al Nawrass': 'Al Nawrass',
+//                    'Al Quods Acharif': 'Al Quods Acharif',
+//                    'Alia': 'Alia',
+//                    'Assanabil': 'Assanabil',
+//                    'EL KADISSIA': 'EL KADISSIA',
+//                    'EL MANAL': 'EL MANAL',
+//                    'Groupe Scolaire Miri': 'Groupe Scolaire Miri',
+//                    'IBN YASSINE': 'IBN YASSINE',
+//                    'Ibn Khaldoun': 'Ibn Khaldoun',
+//                    'Ibnou roumi': 'Ibnou roumi',
+//                    'Jaber Ben Hayane': 'Jaber Ben Hayane',
+//                    'Jaber Bnou Hayane': 'Jaber Bnou Hayane',
+//                    'Jules Ferry': 'Jules Ferry',
+//                    'Lycée Al Maarif': 'Lycée Al Maarif',
+//                    'Lycée Dania': 'Lycée Dania',
+//                    'Lycée El Kadissia': 'Lycée El Kadissia',
+//                    'Lycée Galilé': 'Lycée Galilé',
+//                    'Lycée Maarif': 'Lycée Maarif',
+//                    'Lycée Pascal': 'Lycée Pascal',
+//                    'Lycée Pythagore': 'Lycée Pythagore',
+//                    'Lycée Technique': 'Lycée Technique',
+//                    'OMAR EL FAROUK': 'OMAR EL FAROUK',
+//                    'Omar AlKAYAM': 'Omar AlKAYAM',
+//                    'jaber ben hayyane': 'jaber ben hayyane',
+//                    'poincarré': 'poincarré'
+//                }],
+//            "Nador": [{
+//                    'Autre': 'Autre',
+//                    'Abdelkrim Al Khattabi': 'Abdelkrim Al Khattabi',
+//                    'Abdelkrim El Khattabi': 'Abdelkrim El Khattabi',
+//                    'Al Faid': 'Al Faid',
+//                    'Al Matar': 'Al Matar',
+//                    'Charif Mohamed Ameziane': 'Charif Mohamed Ameziane',
+//                    'El Rrissala': 'El Rrissala',
+//                    'Farkhana': 'Farkhana',
+//                    'Haman Al Fatouaki': 'Haman Al Fatouaki',
+//                    'Hassane Ibn Tabit': 'Hassane Ibn Tabit',
+//                    'Ibn Sina': 'Ibn Sina',
+//                    'Ibnou Al Haitam': 'Ibnou Al Haitam',
+//                    'Lycée technique Al Matar': 'Lycée technique Al Matar',
+//                    'Mohamed V': 'Mohamed V',
+//                    'Mohamed VI': 'Mohamed VI',
+//                    'Moqaddame Bouziane': 'Moqaddame Bouziane',
+//                    'Nador': 'Nador',
+//                    'Othmane Ben Affane': 'Othmane Ben Affane',
+//                    'Othmane Ibn Affane': 'Othmane Ibn Affane',
+//                    'Selouane El Hassani': 'Selouane El Hassani',
+//                    'hassan ben tabit': 'hassan ben tabit',
+//                    'ie lope de vega': 'ie lope de vega'
+//                }],
+//            "Oaurzazate": [{
+//                    'Autre': 'Autre',
+//                    'ARRAZI': 'ARRAZI',
+//                    'Abdelkrim Al Khattabi': 'Abdelkrim Al Khattabi',
+//                    'Abi Bakr Essaddik': 'Abi Bakr Essaddik',
+//                    'Abi El Kacam': 'Abi El Kacam',
+//                    'Abou Bakr Seddik': 'Abou Bakr Seddik',
+//                    'Errazi': 'Errazi',
+//                    'Hassan II': 'Hassan II',
+//                    'IBN ZOHR': 'IBN ZOHR',
+//                    'Ibn Al Haitam': 'Ibn Al Haitam',
+//                    'Ibn El Haytam': 'Ibn El Haytam',
+//                    'Ibn Sina': 'Ibn Sina',
+//                    'Mohamed VI': 'Mohamed VI',
+//                    'Moulay Rachid': 'Moulay Rachid',
+//                    'Salah Din Ayoubi': 'Salah Din Ayoubi',
+//                    'Sidi Daoud': 'Sidi Daoud'
+//                }],
+//            "Oujda": [{
+//                    'Autre': 'Autre',
+//                    'Abdellah Guennoun': 'Abdellah Guennoun',
+//                    'Abdelmoumen': 'Abdelmoumen',
+//                    'Abou Chouaib Doukkali': 'Abou Chouaib Doukkali',
+//                    'Abou el khir': 'Abou el khir',
+//                    'Al badil': 'Al badil',
+//                    'Al badil TTarbaoui': 'Al badil TTarbaoui',
+//                    'Allaymoune': 'Allaymoune',
+//                    'Ben Mimoune': 'Ben Mimoune',
+//                    'Charif El Idriss': 'Charif El Idriss',
+//                    'EL FATH': 'EL FATH',
+//                    'El Maghrib Al Arabi': 'El Maghrib Al Arabi',
+//                    'El Qadi Bnou El Arabi': 'El Qadi Bnou El Arabi',
+//                    'Elarbi Al Houcini': 'Elarbi Al Houcini',
+//                    'Ennefzaouia': 'Ennefzaouia',
+//                    'Essalam': 'Essalam',
+//                    'Ibn Sina': 'Ibn Sina',
+//                    'Ibnou Al Banna Al Mourakouchi': 'Ibnou Al Banna Al Mourakouchi',
+//                    'Isly': 'Isly',
+//                    'Lamassira': 'Lamassira',
+//                    'Mehdi Ben Barka': 'Mehdi Ben Barka',
+//                    'Omar Ben Abdelaziz': 'Omar Ben Abdelaziz',
+//                    'Omar Bnou Abdelaziz': 'Omar Bnou Abdelaziz',
+//                    'Omar Oujda': 'Omar Oujda',
+//                    'Oued Eddahab': 'Oued Eddahab',
+//                    'Prince Moulay Abdellah': 'Prince Moulay Abdellah',
+//                    'Princesse Lalla Asmaa': 'Princesse Lalla Asmaa',
+//                    'Riad': 'Riad',
+//                    'Salah Din Ayoubi': 'Salah Din Ayoubi',
+//                    'Sidi Driss': 'Sidi Driss',
+//                    'Zineb Enafzawia': 'Zineb Enafzawia',
+//                    'Ziri Bnou attia': 'Ziri Bnou attia',
+//                    'charif al idrissi': 'charif al idrissi'
+//                }],
+//            "Safi": [{
+//                    'Autre': 'Autre',
+//                    'Acharif Al Idriss Technique': 'Acharif Al Idriss Technique',
+//                    'Al Idrissi Technique': 'Al Idrissi Technique',
+//                    'Al Khawarizmi': 'Al Khawarizmi',
+//                    'Al Moutanabi': 'Al Moutanabi',
+//                    'El Hidaya': 'El Hidaya',
+//                    'Fqih El Kanouni': 'Fqih El Kanouni',
+//                    'Hassan II': 'Hassan II',
+//                    'Ibn Khaldoun': 'Ibn Khaldoun',
+//                    'Ibn Mly Elhaj': 'Ibn Mly Elhaj',
+//                    'Ibn Sina': 'Ibn Sina',
+//                    'Ibnou Sina': 'Ibnou Sina',
+//                    'LA SAGESSE': 'LA SAGESSE',
+//                    'Lycée agricole': 'Lycée agricole',
+//                    'Moulay Ismail': 'Moulay Ismail',
+//                    'PLATEAU BENSOUDA': 'PLATEAU BENSOUDA',
+//                    'Salah Din Ayoubi': 'Salah Din Ayoubi',
+//                    'Salaheddine Al Ayoubi': 'Salaheddine Al Ayoubi',
+//                    'charif al idrissi': 'charif al idrissi',
+//                    'el khawarizmi': 'el khawarizmi'
+//                }],
+//            "Salé": [{
+//                    'Autre': 'Autre',
+//                    'Abbas Mahmoud Al Akkad': 'Abbas Mahmoud Al Akkad',
+//                    'Abderrahim Bouabid': 'Abderrahim Bouabid',
+//                    'Abdessalam Amer': 'Abdessalam Amer',
+//                    'Abessalam Amer': 'Abessalam Amer',
+//                    'Ahmed Chawki': 'Ahmed Chawki',
+//                    'Ahmed Elhanssali': 'Ahmed Elhanssali',
+//                    'Al Abbas Miftah': 'Al Abbas Miftah',
+//                    'Al Mokawama': 'Al Mokawama',
+//                    'Al Moutanabi': 'Al Moutanabi',
+//                    'Alal Al Fassi': 'Alal Al Fassi',
+//                    'Allal Al Fassi': 'Allal Al Fassi',
+//                    'Allama Mohamed Sbihi': 'Allama Mohamed Sbihi',
+//                    'Annahda': 'Annahda',
+//                    'COMPLEXE SCOLAIRE KHALIL ABDELHAFID': 'COMPLEXE SCOLAIRE KHALIL ABDELHAFID',
+//                    'EL BATOUL SBIHI': 'EL BATOUL SBIHI',
+//                    'EL FAKIH TETOUANI': 'EL FAKIH TETOUANI',
+//                    'EL YAKADA': 'EL YAKADA',
+//                    'El Ayoubi': 'El Ayoubi',
+//                    'El Fakih El Mrini': 'El Fakih El Mrini',
+//                    'El Houcine Essalaoui': 'El Houcine Essalaoui',
+//                    'GROUPE SCOLAIRE AL MAARIF II': 'GROUPE SCOLAIRE AL MAARIF II',
+//                    'Hassan II': 'Hassan II',
+//                    'INSTITUT ADAM': 'INSTITUT ADAM',
+//                    'INSTITUT L\'EVEIL': 'INSTITUT L\'EVEIL',
+//                    'Ibn El Khatib': 'Ibn El Khatib',
+//                    'Ibn Hani': 'Ibn Hani',
+//                    'Jaber Ben Hayane': 'Jaber Ben Hayane',
+//                    'Jaber Ibn Hayane': 'Jaber Ibn Hayane',
+//                    'Kadi Ayad': 'Kadi Ayad',
+//                    'LYCEE MAGHREB ARABI': 'LYCEE MAGHREB ARABI',
+//                    'Lafkih mohamed Ben Abi': 'Lafkih mohamed Ben Abi',
+//                    'Lycée technique': 'Lycée technique',
+//                    'Mandar El Jamil': 'Mandar El Jamil',
+//                    'Mohamed Bel Hassan El Ouazzani': 'Mohamed Bel Hassan El Ouazzani',
+//                    'Mohamed El Hamdaoui': 'Mohamed El Hamdaoui',
+//                    'Mohamed VI': 'Mohamed VI',
+//                    'Mohammed Jamal Dorra': 'Mohammed Jamal Dorra',
+//                    'Mouha Ouhamou Ezzayani': 'Mouha Ouhamou Ezzayani',
+//                    'Moulay Tayeb Alaoui': 'Moulay Tayeb Alaoui',
+//                    'cady ayyad': 'cady ayyad'
+//                }],
+//            "Sefrou": [{
+//                    'Autre': 'Autre',
+//                    'Al Yassamine': 'Al Yassamine',
+//                    'Bir Anzarane': 'Bir Anzarane',
+//                    'Mohamed El Fassi': 'Mohamed El Fassi',
+//                    'Mohamed El Kourri': 'Mohamed El Kourri',
+//                    'Mohamed VI': 'Mohamed VI',
+//                    'Moulay Idriss Al Akbar': 'Moulay Idriss Al Akbar',
+//                    'Sidi Lahcen El Youssi': 'Sidi Lahcen El Youssi',
+//                    'Tarik Bnou Zayad': 'Tarik Bnou Zayad'
+//                }],
+//            "Settat": [{
+//                    'Autre': 'Autre',
+//                    'Al Markaz': 'Al Markaz',
+//                    'Al Qods': 'Al Qods',
+//                    'Allal Ben Abdellah': 'Allal Ben Abdellah',
+//                    'Azzaitoun': 'Azzaitoun ',
+//                    'Bajja': 'Bajja',
+//                    'Bismillah': 'Bismillah',
+//                    'Bouchra': 'Bouchra',
+//                    'El Borouj': 'El Borouj',
+//                    'Errazi': 'Errazi',
+//                    'Groupe scolaire les Oliviers': 'Groupe scolaire les Oliviers',
+//                    'Guisser': 'Guisser',
+//                    'Hassan II': 'Hassan II',
+//                    'Ibn Abbad': 'Ibn Abbad',
+//                    'Janatouna': 'Janatouna',
+//                    'Laayoune': 'Laayoune',
+//                    'Lycée Technique': 'Lycée Technique',
+//                    'Oulad Said': 'Oulad Said',
+//                    'Rahal Meskini': 'Rahal Meskini',
+//                    'Ras El Ain': 'Ras El Ain',
+//                    'Sidi Hajjaj': 'Sidi Hajjaj',
+//                    'Sidi Mhamed Berrahal': 'Sidi Mhamed Berrahal',
+//                    'Waha': 'Waha',
+//                    'Woroud': 'Woroud ',
+//                    'YASSAMINE': 'YASSAMINE'
+//                }],
+//            "Sidi Kacem": [{
+//                    'Autre': 'Autre',
+//                    '20 aout': '20 aout',
+//                    'Abdellah Ibrahim': 'Abdellah Ibrahim',
+//                    'Agricole': 'Agricole',
+//                    'Al Mansour Addahbi': 'Al Mansour Addahbi',
+//                    'Al Moutanabi': 'Al Moutanabi',
+//                    'Al Wahda': 'Al Wahda',
+//                    'Alfarabi': 'Alfarabi',
+//                    'Belksiri': 'Belksiri',
+//                    'El Mansour Dahbi': 'El Mansour Dahbi',
+//                    'Groupe scolaire Ouhoud': 'Groupe scolaire Ouhoud',
+//                    'Jorf El Melha': 'Jorf El Melha',
+//                    'Mohamed V': 'Mohamed V',
+//                    'Mohamed Zerktouni': 'Mohamed Zerktouni',
+//                    'Moulay Rachid': 'Moulay Rachid',
+//                    'Ouhoud': 'Ouhoud',
+//                    'Prince Moulay Abdellah': 'Prince Moulay Abdellah',
+//                    'Zeggouta': 'Zeggouta'
+//                }],
+//            "Sidi Slimane": [{
+//                    'Autre': 'Autre',
+//                    'Allal El Fassi': 'Allal El Fassi',
+//                    'Essalam': 'Essalam',
+//                    'Ibn Zeidoun': 'Ibn Zeidoun',
+//                    'Ksaibiya': 'Ksaibiya',
+//                    'Prince Moulay Abdellah': 'Prince Moulay Abdellah',
+//                    'Zineb Nafzaouia': 'Zineb Nafzaouia'
+//                }],
+//            "Tanger": [{
+//                    'Autre': 'Autre',
+//                    'AL MOHAMMEDIA': 'AL MOHAMMEDIA',
+//                    'Abdelkhalek Torres': 'Abdelkhalek Torres',
+//                    'Abi Bakr Errazi': 'Abi Bakr Errazi',
+//                    'Abi El Abbas Sebti': 'Abi El Abbas Sebti',
+//                    'Al Hafida': 'Al Hafida',
+//                    'Alal Al Fassi': 'Alal Al Fassi',
+//                    'Allal El Fassi': 'Allal El Fassi',
+//                    'FEDERICO GARCIA LORCA EX SHAKESPEARE': 'FEDERICO GARCIA LORCA EX SHAKESPEARE',
+//                    'G.S Nilufer': 'G.S Nilufer',
+//                    'Groupe Scolaire Al amana': 'Groupe Scolaire Al amana',
+//                    'Groupe Scolaire Azzaytouna': 'Groupe Scolaire Azzaytouna',
+//                    'Ibn El Khatib': 'Ibn El Khatib',
+//                    'Immam Al Ghazali': 'Immam Al Ghazali',
+//                    'Institut Anoual': 'Institut Anoual',
+//                    'Institut privé Agharass': 'Institut privé Agharass',
+//                    'Institut privé Jabal Tarik': 'Institut privé Jabal Tarik',
+//                    'Khaouarizmi': 'Khaouarizmi',
+//                    'LYCEE REGNAULT': 'LYCEE REGNAULT',
+//                    'Lycée Jabal Tarik': 'Lycée Jabal Tarik',
+//                    'Lycée Mohamed Arsalane': 'Lycée Mohamed Arsalane',
+//                    'Lycée Nulifer': 'Lycée Nulifer',
+//                    'Lycée Regnaut': 'Lycée Regnaut',
+//                    'Lycée Schuman': 'Lycée Schuman',
+//                    'Lycée Technique Moulay Youssef': 'Lycée Technique Moulay Youssef',
+//                    'Med el fatih': 'Med el fatih',
+//                    'Moulay Rachid': 'Moulay Rachid',
+//                    'Moulay Slimane Originel': 'Moulay Slimane Originel',
+//                    'Moulay Youssef': 'Moulay Youssef',
+//                    'Oued Eddahab': 'Oued Eddahab',
+//                    'Roi Fahd Ibn Abdelaziz': 'Roi Fahd Ibn Abdelaziz',
+//                    'The American School of Tanger': 'The American School of Tanger',
+//                    'Zainab Nafzaouiya': 'Zainab Nafzaouiya',
+//                    'Zineb Enafzawia': 'Zineb Enafzawia'
+//                }],
+//            "Tarroudante": [{
+//                    'Autre': 'Autre',
+//                    'Abdellah Chefchaouni': 'Abdellah Chefchaouni',
+//                    'Abderrahman Nacer': 'Abderrahman Nacer',
+//                    'Abi Hayan Atawhidi': 'Abi Hayan Atawhidi',
+//                    'Ait Iaaza': 'Ait Iaaza',
+//                    'Al Amal Privé': 'Al Amal Privé',
+//                    'Al Arak': 'Al Arak',
+//                    'Al Maarifa': 'Al Maarifa',
+//                    'Al Majd': 'Al Majd',
+//                    'BENNIS': 'BENNIS',
+//                    'Hassan II': 'Hassan II',
+//                    'Ibn Soulaimane Roudani': 'Ibn Soulaimane Roudani',
+//                    'Iqraa': 'Iqraa',
+//                    'Lycée Mohammed V': 'Lycée Mohammed V',
+//                    'Sidi Moussa': 'Sidi Moussa',
+//                    'Sidi ou Sidi': 'Sidi ou Sidi',
+//                    'noor arrachad': 'noor arrachad'
+//                }],
+//            "Temara": [{
+//                    'Autre': 'Autre',
+//                    '1er lycée militaire royal': '1er lycée militaire royal',
+//                    'Abderrahmane Eddakhil': 'Abderrahmane Eddakhil',
+//                    'Aby Bakr Arrazi': 'Aby Bakr Arrazi',
+//                    'Agricole': 'Agricole',
+//                    'Al Andalous': 'Al Andalous',
+//                    'Al Mansour Eddahbi': 'Al Mansour Eddahbi',
+//                    'Al manbaa': 'Al manbaa',
+//                    'Bilal Bnou Rabah': 'Bilal Bnou Rabah',
+//                    'Chafchaouni': 'Chafchaouni',
+//                    'GALILEO': 'GALILEO',
+//                    'IMANIAT': 'IMANIAT',
+//                    'Ibn Rochd': 'Ibn Rochd',
+//                    'Imam Al ghazali': 'Imam Al ghazali',
+//                    'Imam Boukhari': 'Imam Boukhari',
+//                    'Kadi Ayade': 'Kadi Ayade',
+//                    'LES ECOLES SCIENTIFIQUES': 'LES ECOLES SCIENTIFIQUES',
+//                    'Larbi Doghmi': 'Larbi Doghmi',
+//                    'MADARISS MARIA': 'MADARISS MARIA',
+//                    'Maati Bouabid': 'Maati Bouabid',
+//                    'Mers El Kheir': 'Mers El Kheir',
+//                    'Mohamed Serraj': 'Mohamed Serraj',
+//                    'Moulay Ali Cherif': 'Moulay Ali Cherif',
+//                    'Prince mly Abdellah': 'Prince mly Abdellah',
+//                    'Selmane El Farissi': 'Selmane El Farissi'
+//                }],
+//            "Tetouan": [{
+//                    'AbdelKhalek Torres': 'AbdelKhalek Torres',
+//                    'Abou Bakr Asseddiq': 'Abou Bakr Asseddiq',
+//                    'Amis des sciences': 'Amis des sciences',
+//                    'Chaikh Mohamed El Mekki Ennassi': 'Chaikh Mohamed El Mekki Ennassi',
+//                    'Charif Al Idrissi': 'Charif Al Idrissi',
+//                    'El Mehdi Bennouna': 'El Mehdi Bennouna',
+//                    'Errazi': 'Errazi',
+//                    'Hassan II': 'Hassan II',
+//                    'INSTITUT ESPAGNOL D\'ENSEIGNEMENT SECONDAIRE NUESTRA SENORA DEL PILAR': 'INSTITUT ESPAGNOL D\'ENSEIGNEMENT SECONDAIRE NUESTRA SENORA DEL PILAR',
+//                    'Imam Al Ghazali': 'Imam Al Ghazali',
+//                    'Jaber Ibn Hayan': 'Jaber Ibn Hayan',
+//                    'Kadi Ayad': 'Kadi Ayad',
+//                    'Kadi Ibn Al Arabi': 'Kadi Ibn Al Arabi',
+//                    'Khadija Oum Al Mouminine': 'Khadija Oum Al Mouminine',
+//                    'Omar Ibn Al Khattab': 'Omar Ibn Al Khattab'
+//                }],
+//            "Goulmima-Errachidia": [{
+//                    'Autre': 'Autre'
+//                }],
+//            "Tadla": [{
+//                    'Autre': 'Autre',
+//                    'IBN ROCHD': 'IBN ROCHD',
+//                    'Moulay Ismail': 'Moulay Ismail',
+//                    'Moulay Rachid': 'Moulay Rachid'
+//                }],
+//            "Goulmime": [{
+//                    'Autre': 'Autre',
+//                    'Al Khawarizmi': 'Al Khawarizmi',
+//                    'Ibn Khaldoun': 'Ibn Khaldoun',
+//                    'KHAWARIZMI': 'KHAWARIZMI'
+//                }],
+//            "Azrou": [{
+//                    'Autre': 'Autre',
+//                    'TARIK BNOU ZIAD': 'TARIK BNOU ZIAD'
+//                }],
+//            "Ouazzane": [{
+//                    'Autre': 'Autre',
+//                    'Hassane II': 'Hassane II'
+//                }],
+//            "Rissani": [{
+//                    'Autre': 'Autre',
+//                    'Princesse LALLA SALMA': 'Princesse LALLA SALMA'
+//                }],
+//            "Kinshasa": [{
+//                    'Autre': 'Autre',
+//                    'LYCEE FRANCAIS': 'LYCEE FRANCAIS'
+//                }],
+//            "Skhirat": [{
+//                    'Autre': 'Autre',
+//                    'Abi Bakr Errazi': 'Abi Bakr Errazi'
+//                }],
+//            "Khemisset": [{
+//                    'Autre': 'Autre',
+//                    'EL YASMINE': 'EL YASMINE',
+//                    'LES ORANGES': 'LES ORANGES',
+//                    'MANARAT EL FIRDAOUS': 'MANARAT EL FIRDAOUS',
+//                    'MOHAMED BEN EL HASSAN EL OUAZZANI': 'MOHAMED BEN EL HASSAN EL OUAZZANI',
+//                    'MOUSSA IBN NOUSSAIR': 'MOUSSA IBN NOUSSAIR'
+//                }],
+//            "Tiflet": [{
+//                    'Autre': 'Autre',
+//                    'ABDELKRIM EL KHATTABI': 'ABDELKRIM EL KHATTABI',
+//                    'OUED EDDAHAB': 'OUED EDDAHAB'
+//                }],
+//            "Youssoufia": [{
+//                    'Autre': 'Autre',
+//                    'Al Andalous': 'Al Andalous',
+//                    'IMAM BOUKHARI': 'IMAM BOUKHARI',
+//                    'JABER IBNOU HAYANE': 'JABER IBNOU HAYANE',
+//                    'KACHKAT': 'KACHKAT'
+//                }],
+//            "Benguerir": [{
+//                    'Autre': 'Autre',
+//                    'Abdellah Ibrahim': 'Abdellah Ibrahim',
+//                    'CHAHID SALAH SARGHINI': 'CHAHID SALAH SARGHINI'
+//                }],
+//            "Kelaa des Sraghna": [{
+//                    'Autre': 'Autre',
+//                    'EL QODS': 'EL QODS',
+//                    'MOULAY ISMAIL': 'MOULAY ISMAIL',
+//                    'TASSAOUT': 'TASSAOUT'
+//                }],
+//            "Chichaoua": [{
+//                    'Autre': 'Autre',
+//                    'BOUKHARI': 'BOUKHARI'
+//                }],
+//            "Sidi Mokhtar": [{
+//                    'Autre': 'Autre',
+//                    'IBN ROCHD': 'IBN ROCHD'
+//                }],
+//            "Bir jdid": [{
+//                    'Autre': 'Autre'
+//                }],
+//            "Khenifra": [{
+//                    'Autre': 'Autre',
+//                    'Abou El Kassem': 'Abou El Kassem',
+//                    'Fatima zahra': 'Fatima zahra'
+//                }],
+//            "Etranger": [{
+//                    'Autre (Etranger)': 'Autre (Etranger)'
+//                }],
+//            "Autre": [{
+//                    'Autre': 'Autre'
+//                }]
+//        }
+//    ];
+
+    $('#uic-forms-preinscription-candidat-new #edit-civilite-Mlle').addClass('validate[required]');
+    $('#edit-Type-baccalaureat').change(function () {
+        $('.niveau_bac .form-item').hide();
+        $('.niveau_bac select').removeClass('validate[required]');
+        $('.niveau_bac select').removeAttr('type');
+        $('.branche_bac select').removeClass('validate[required]');
+        $('.branche_bac select').removeAttr('type');
+        var typebac = $(this).val();
+        if (typebac === 'Bac Marocain') {
+            if ($('#edit-type-inscription').val() === 'oldBachelier')
+            {
+                $('#edit-Niveau-baccalaureat-maroc-old-wrapper').show();
+                $('#edit-Niveau-baccalaureat-maroc-old').addClass('validate[required]');
+                $('#edit-Niveau-baccalaureat-maroc-old').attr('type', 'text');
+                $('#edit-branche-baccalaureat-maroc-old-wrapper').show();
+                $('#edit-branche-baccalaureat-maroc-old').addClass('validate[required]');
+                $('#edit-branche-baccalaureat-maroc-old').attr('type', 'text');
+            } else {
+                $('#edit-Niveau-baccalaureat-maroc-wrapper').show();
+                $('#edit-Niveau-baccalaureat-maroc').addClass('validate[required]');
+                $('#edit-Niveau-baccalaureat-maroc').attr('type', 'text');
+                $('#edit-branche-baccalaureat-maroc-wrapper').show();
+                $('#edit-branche-baccalaureat-maroc').addClass('validate[required]');
+                $('#edit-branche-baccalaureat-maroc').attr('type', 'text');
+            }
+        } else {
+
+            if ($('#edit-type-inscription').val() === 'oldBachelier')
+            {
+                $('#edit-Niveau-baccalaureat-autre-old-wrapper').show();
+                $('#edit-Niveau-baccalaureat-autre-old-wrapper').show();
+                $('#edit-Niveau-baccalaureat-autre-old').addClass('validate[required]');
+                $('#edit-Niveau-baccalaureat-autre-old').attr('type', 'text');
+            } else {
+                $('#edit-Niveau-baccalaureat-autre-wrapper').show();
+                $('#edit-Niveau-baccalaureat-autre-wrapper').show();
+                $('#edit-Niveau-baccalaureat-autre').addClass('validate[required]');
+                $('#edit-Niveau-baccalaureat-autre').attr('type', 'text');
+            }
+            if (typebac === 'Bac Français') {
+
+                $('#edit-branche-baccalaureat-france-wrapper').show();
+                $('#edit-branche-baccalaureat-france').addClass('validate[required]');
+                $('#edit-branche-baccalaureat-france').attr('type', 'text');
+            } else {
+                $('#edit-branche-baccalaureat-autre-wrapper').show();
+                $('#edit-branche-baccalaureat-autre').addClass('validate[required]');
+                $('#edit-branche-baccalaureat-autre').attr('type', 'text');
+            }
+        }
+    });
+    //$('#uic-forms-preinscription-candidat-new #edit-submit-2').click(function(e){
+    //    var email = $('#edit-email').val();
+    //    var tel   = $('#edit-gsm').val();
+    //    $.ajax({
+    //        dataType: "html",
+    //        url: "/check-condidat-by-email-tel/"+email+"/"+tel,
+    //        success: function(data) {
+    //            if(data == 1){
+    //                $('.session_mesage_deja').css('display', 'block');
+    //            }else{
+    //                $('#uic-forms-preinscription-candidat-new').submit();
+    //            }
+    //        },
+    //        error: function() {
+    //        }
+    //    });
+    //    e.preventDefault();
+    //});
+});
+function isValidEmailAddress(emailAddress) {
+    var pattern = new RegExp(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i);
+    return pattern.test(emailAddress);
+}
+function isValidPhone(numberphone) {
+    var pattern = new RegExp(/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{3})/);
+    return pattern.test(numberphone);
+}

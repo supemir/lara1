@@ -1,0 +1,774 @@
+@font-face {
+    font-family: 'fontawesomeregular';
+    src: url('../css/font/fontawesome-webfont.woff2') format('woff2'),
+    url('../css/font/fontawesome-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'open_sansbold';
+    src: url('../css/font/opensans-bold-webfont.woff2') format('woff2'),
+    url('../css/font/opensans-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'open_sansbold_italic';
+    src: url('../css/font/opensans-bolditalic-webfont.woff2') format('woff2'),
+    url('../css/font/opensans-bolditalic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'open_sans_condensedbold';
+    src: url('../css/font/opensans-condbold-webfont.woff2') format('woff2'),
+    url('../css/font/opensans-condbold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'open_sansextrabold';
+    src: url('../css/font/opensans-extrabold-webfont.woff2') format('woff2'),
+    url('../css/font/opensans-extrabold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'open_sansextrabold_italic';
+    src: url('../css/font/opensans-extrabolditalic-webfont.woff2') format('woff2'),
+    url('../css/font/opensans-extrabolditalic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'open_sansitalic';
+    src: url('../css/font/opensans-italic-webfont.woff2') format('woff2'),
+    url('../css/font/opensans-italic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'open_sanslight';
+    src: url('../css/font/opensans-light-webfont.woff2') format('woff2'),
+    url('../css/font/opensans-light-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'open_sanslight_italic';
+    src: url('../css/font/opensans-lightitalic-webfont.woff2') format('woff2'),
+    url('../css/font/opensans-lightitalic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'open_sansregular';
+    src: url('../css/font/opensans-regular-webfont.woff2') format('woff2'),
+    url('../css/font/opensans-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'open_sanssemibold';
+    src: url('../css/font/opensans-semibold-webfont.woff2') format('woff2'),
+    url('../css/font/opensans-semibold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'open_sanssemibold_italic';
+    src: url('../css/font/opensans-semibolditalic-webfont.woff2') format('woff2'),
+    url('../css/font/opensans-semibolditalic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@-ms-viewport {
+    width: device-width;
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+    overflow-x: hidden;
+    max-width: 1366px;
+    margin: auto;
+    
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+a:focus, a:hover {
+    color: #0071ce;
+    text-decoration: none;
+}
+
+* {
+    outline: none;
+}
+
+/*Home-page*/
+
+#main {
+    width: 100%;
+    /*background: url("../images/bg-formation-initial.png")no-repeat;*/
+    background: url("student.jpg")no-repeat;
+    height: 1060px;
+    background-size:100% 100%;
+}
+
+.reconnaissance {
+    background: url("../images/bg-formation-initial-reconn.jpg")no-repeat;
+}
+#main-fe {
+    width: 100%;
+    background: url("../images/bg-fe.jpg")no-repeat;
+    height: 1060px;
+    background-size:100% 100%;
+}
+#main-jpo{
+    width: 100%;
+    background: url("../images/jpo-background.jpg")no-repeat;
+    height: 1060px;
+    background-size:100% 100%;
+}
+#main-jpo header{
+    background-color: #fff;
+    height: 90px;
+}
+#main-jpo .content-form{
+    box-shadow: 0 7px 27px #ababab;
+}
+#main-jpo #jpo-desc-container{
+    min-height: 670px;
+    background: rgba(0, 0, 0, 0.53);
+    color: #fff;
+    max-width: 300px;
+    padding: 40px 0 0;
+}
+#main-jpo h1{
+    padding-bottom: 90px;
+    font-family: 'open_sansbold', Sans-serif;
+    text-transform: uppercase;
+    max-width: 200px;
+    margin: 0 auto;
+}
+#main-jpo h1:before, #main-jpo h1:after{
+    content: '';
+    display: block;
+    width: 100%;
+    height: 15px;
+    background-color: #fff;
+}
+#main-jpo span{
+    display: block;
+    letter-spacing: -3px;
+}
+#main-jpo h1 span:first-child{
+    padding-top: 25px;
+    font-size: 48px;
+    padding-left: 6px;
+}
+#main-jpo h1 span:nth-child(2){
+    font-size: 57px;
+    padding: 10px 0 5px;
+}
+#main-jpo h1 span:last-child{
+    font-size: 43px;
+    padding-bottom: 25px;
+}
+#main-jpo #blue-block{
+    background-color: #0073ae;
+    min-height: 300px;
+    padding-top: 30px;
+    position: relative;
+    font-family: 'open_sansbold';
+}
+#main-jpo #list-jpo li{
+    list-style-type: disc;
+    color: #0073ae;
+    font-size: 17px;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+#main-jpo #list-jpo{
+    padding-top: 550px;
+    margin-left: -80px;
+    line-height: 26px;
+}
+#main-jpo .content-form{
+    top: -100px;
+}
+#main-jpo #blue-block #jpd-date{
+    font-size: 33px;
+    padding-bottom: 10px;
+}
+#main-jpo #blue-block #hour-jpo{
+    font-size: 30px;
+    line-height: 34px;
+    padding-bottom: 10px;
+}
+#main-jpo #blue-block span{
+    font-size: 60px;
+}
+#main-jpo #blue-block>div{
+    padding: 0 20px;
+}
+#main-jpo #blue-block:before{
+    content: '';
+    width: 0;
+    height: 0;
+    border-bottom: 80px solid #0072ae;
+    border-right: 300px solid transparent;
+    position: absolute;
+    top: -79px;
+}
+#main-jpo h3#success-msg{
+    font-family: open_sansbold;
+    color: #186eab;
+    font-size: 26px;
+    text-transform: uppercase;
+    text-align: center;
+    border: 1px solid #e6e6e6;
+    padding-top: 32px;
+    padding-bottom: 32px;
+    margin-top: 180px;
+}
+@media screen and (max-width: 640px){
+    #main-jpo h1{
+        padding-bottom: 70px;
+    }
+    #main-jpo #jpo-desc-container{
+        margin: 0 auto;
+    }
+    #main-jpo .rs-uic{
+        float: none;
+        text-align: center;
+        margin-top: 20px !important;
+        margin-bottom: 20px;
+    }
+    #main-jpo #blue-block{
+        min-height: 190px;
+        padding-top: 0;
+    }
+    #main-jpo header{
+        height: auto;
+    }
+    #main-jpo .rs-uic ul li{
+        float: none;
+        display: inline-block;
+    }
+    #main-jpo .contenue-fi {
+        background: url(../images/jpo-background-mobile.jpg)no-repeat;
+        height: auto;
+        min-height: 515px;
+        background-size: cover !important;
+
+    }
+    #main-jpo #list-jpo{
+        display: none;
+    }
+    #main-jpo .content-form{
+        width: 96%;
+        margin: 0 auto;
+        padding-bottom: 30px;
+    }
+    #main-jpo #jpo-desc-container {
+        max-width: 350px;
+        min-height: 510px;
+        padding-top: 10px;
+    }
+    #main-jpo #blue-block:before {
+        border-right: 350px solid transparent;
+    }
+    #main-jpo .uic-logo {
+        float: none;
+        text-align: center;
+        margin: 30px 0 0;
+    }
+}
+.container-lp{
+    max-width: 1240px;
+    margin: 0 auto;
+}
+/*===================/header/==========================*/
+header{
+    height: 121px;
+}
+.rs-uic{
+    float: right;
+    margin-top: 50px;
+}
+.rs-uic ul li{
+    float: right;
+    margin-right: 9px;
+}
+.uic-logo{
+    display: block;
+    float: left;
+    margin-top: 40px;
+    margin-left: 56px;
+}
+#main-jpo .uic-logo{
+    margin-top: 10px;
+}
+#main-jpo .rs-uic {
+    margin-top: 40px;
+}
+.content-form{
+    background-color: white;
+    width: 85%;
+    height: auto;
+    min-height: 760px;
+    position: absolute;
+    top: -122px;
+}
+.content-form h2{
+      font-family: Arial;
+    /*font-family: open_sans bold;*/
+    color: #186eab;
+    font-size: 36px;
+    text-transform: uppercase;
+    text-align: center;
+    border-bottom: 1px solid #e6e6e6;
+    padding-top: 32px;
+    padding-bottom: 32px;
+}
+#main-jpo .content-form h2{
+    padding-top: 43px;
+    padding-bottom: 21px;
+}
+.contenue-formulaire{
+    width: 90%;
+    margin: auto;
+    margin-top: 30px;
+}
+.contenue-formulaire p{
+    font-family: open_sanslight;
+    color: #000000;
+    font-size: 14px;
+    margin-bottom: 45px;
+    line-height: 20px;
+}
+.formulaire-uic input[type=text]{
+    width: 100%;
+    height: 34px;
+    background-color: #f5f5f5;
+    border: none;
+    padding-left: 10px;
+    margin-bottom: 13px;
+    font-family: open_sanslight;
+    color: #2a2a2a;
+    font-size: 14px;
+}
+.formulaire-uic input[type=text]::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    font-family: open_sanslight;
+    color: #2a2a2a;
+    font-size: 14px;
+}
+.formulaire-uic input[type=text]::-moz-placeholder { /* Firefox 19+ */
+    font-family: open_sanslight;
+    color: #2a2a2a;
+    font-size: 14px;
+}
+.formulaire-uic input[type=text]:-ms-input-placeholder { /* IE 10+ */
+    font-family: open_sanslight;
+    color: #2a2a2a;
+    font-size: 14px;
+}
+.formulaire-uic input[type=text]:-moz-placeholder { /* Firefox 18- */
+    font-family: open_sanslight;
+    color: #2a2a2a;
+    font-size: 14px;
+}
+.formulaire-uic select::-ms-expand {
+    display: none;
+}
+.formulaire-uic select{
+    width: 100%;
+    height: 34px;
+    border: none;
+    padding-left: 10px;
+    margin-bottom: 13px;
+    font-family: open_sanslight;
+    color: #2a2a2a;
+    font-size: 14px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: #f5f5f5 url(../images/arrows-select.png)no-repeat right 15px top 14px;
+    line-height: normal;
+}
+.formulaire-uic p, #edit-accepter-detre-contacter-wrapper label, #edit-opposer-lutilisation-wrapper label {
+    display: inline-block;
+    font-family: open_sanssemibold;
+    color: #2a2a2a;
+    font-size: 12px;
+    margin-bottom: 0px;
+    padding-top: 1%;
+}
+#edit-accepter-wrapper label{
+    font-family: open_sanssemibold;
+    font-size: 22px;
+    line-height: 1.2;
+    text-align: justify;
+
+}
+#edit-accepter-detre-contacter-wrapper label, #edit-opposer-lutilisation-wrapper label {
+    margin-bottom: 5px;
+    line-height: 2;
+}
+.formulaire-uic input[type=checkbox]{
+    /* margin-left: 35px; */
+    margin-right: 10px;
+    margin-top: 5px;
+    /* height: 27px; */
+    float: left;
+    margin-bottom: 5%;
+}
+.formulaire-uic p span{
+    font-family: open_sansregular;
+    color: #186eab;
+}
+.formulaire-uic input[type=submit]{
+    border-radius: 30px;
+    font-family: open_sansbold;
+    color: #fff;
+    font-size: 16px;
+    background-color: #186eab;
+    border: none;
+    margin: auto;
+    display: block;
+    width: 158px;
+    height: 45px;
+    margin-bottom: 20px;
+    /*margin-top: 2%;*/
+    text-transform: uppercase;
+}
+.admission-uic p{
+    width: 415px;
+    height: auto;
+    font-family: open_sansregular;
+    color: #e4e5e5;
+    font-size: 18px;
+    border: 6px solid #fff;
+    padding: 20px;
+    line-height: 25px;
+    margin: auto;
+    margin-top: 90px;
+    margin-bottom: 30px;
+    text-align: justify;
+}
+.admission-uic p span{
+    font-family: open_sansextrabold;
+}
+.contact-uic p{
+    background: url(../images/crocher-left.png)no-repeat left,url(../images/crocher-right.png)no-repeat right;
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 60px;
+    font-family: open_sansbold;
+    color: #fff;
+    font-size: 23px;
+    width: auto;
+    padding-top: 6px;
+    text-align: center;
+    float: right;
+}
+.contact-uic label{
+    font-family: open_sansregular;
+    color: #fff;
+    font-size: 22px;
+    float: left;
+    text-align: center;
+}
+.contact-uic span{
+    font-family: open_sansbold;
+    color: #fff;
+    font-size: 33px;
+    display: block;
+}
+.contact-uic{
+    width: 65%;
+    margin: auto;
+}
+
+.div-adm p{
+    margin-bottom: 5px;
+}
+.div-adm{
+    width: 725px;
+    height: auto;
+    font-family: open_sansregular;
+    color: #ffffff;
+    font-size: 14px;
+    border: 6px solid #fff;
+    padding: 20px;
+    line-height: 16px;
+    margin: auto;
+    margin-top: 18px;
+    margin-bottom: 10px;
+    text-align: justify;
+    background: rgba(0, 0, 0, 0.48);
+}
+#titre_recon{
+    font-weight: bold;
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/************ Responssive Page **************/
+@media screen and (max-width:640px){
+    #main {
+        background: none;
+    }
+    .content-form{
+        position: initial;
+    }
+    .exec{
+        background: url("../images/bg-fe-responssive.png")no-repeat !important;
+    }
+    .contenue-fi{
+        background: url("../images/bg-formation-initial-mobile.png")no-repeat;
+        height: auto;
+        min-height: 635px;
+        background-size: cover !important;
+    }
+    .reconnaissance .contenue-fi {
+        background: url("../images/bg-formation-initial-reconn-mob.jpg") no-repeat;
+    }
+    .content-form{
+        width: 100%;
+    }
+    .contact-uic {
+        width: 66%;
+        margin: auto;
+    }
+    .admission-uic p {
+        margin-top: 140px;
+        width: 95%;
+        color: #e4e5e5;
+        font-size: 25px;
+        line-height: 37px;
+        margin-bottom: 65px;
+    }
+    .div-adm{
+        width: 95%;
+        font-size: 25px;
+        line-height: 33px;
+        margin-top: 160px;
+    }
+    .contact-uic label {
+        font-size: 31px;
+    }
+    .contact-uic span {
+        font-size: 36px;
+        margin-top: 10px;
+    }
+    .contact-uic {
+        width: 90%;
+    }
+    .contact-uic p {
+        padding-left: 30px;
+        padding-right: 30px;
+        height: 86px;
+        font-size: 33px;
+        background-size: 8% 100%;
+    }
+    .contenue-formulaire p {
+        font-size: 24px;
+        line-height: 29px;
+        text-align: justify;
+    }
+    .formulaire-uic input[type=text]{
+        height: 75px;
+        font-size: 26px;
+        padding-left: 24px;
+    }
+    .formulaire-uic select{
+        height: 75px;
+        font-size: 26px;
+        padding-left: 24px;
+        background: #f5f5f5 url(../images/arrows-select.png)no-repeat right 29px top 35px;
+        background-size: 3%;
+    }
+    .formulaire-uic input[type=text]::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+        font-size: 26px;
+    }
+    .formulaire-uic input[type=text]::-moz-placeholder { /* Firefox 19+ */
+        font-size: 26px;
+    }
+    .formulaire-uic input[type=text]:-ms-input-placeholder { /* IE 10+ */
+        font-size: 26px;
+    }
+    .formulaire-uic input[type=text]:-moz-placeholder { /* Firefox 18- */
+        font-size: 26px;
+    }
+    .formulaire-uic p{
+        font-size: 20px;
+    }
+    .formulaire-uic input[type=checkbox] {
+        height: 17px;
+        width: 22px;
+    }
+    .formulaire-uic input[type=submit] {
+        border-radius: 76px;
+        font-size: 44px;
+        width: 440px;
+        height: 120px;
+        /*margin-top: 65px;*/
+    }
+    .formulaire-uic input[type=checkbox] {
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 10px;
+        margin-bottom: 8%;
+    }
+    #main-fe{
+        background: none;
+    }
+    .contenue-fe{
+        background: url("../images/bg-fe-responssive.png")no-repeat;
+        height: auto;
+        min-height: 635px;
+    }
+    label{
+        font-size: 24px;
+    }
+    #edit-accepter-detre-contacter-wrapper label, #edit-opposer-lutilisation-wrapper label {
+        font-family: open_sanssemibold;
+        font-size: 22px;
+        line-height: 1.2;
+        text-align: justify;
+    }
+    .form-item-civilite-preinscription input{
+        width: 20px;
+        height: 20px;
+        margin-left: 20px;
+    }
+}
+
+
+/* --------------- CUSTOM CSS ---------------- */
+.form-item-civilite-preinscription label, .form-item-type-lycee label{
+    float: left;
+    line-height: initial;
+}
+.form-item-civilite-preinscription, .form-item-type-lycee{
+    font-family: open_sanslight;
+    color: #000000;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+.form-item-civilite-preinscription .form-radios div, .form-item-type-lycee .form-radios div{
+    display: inline-block;
+    margin-left: 10px;
+}
+
+#edit-indicatif{
+    width: 28%;
+    float: left;
+    margin-right: 2%;
+}
+
+#edit-gsm{
+    width: 70%;
+}
+.form-confirm{
+    font-size: 40px !important;
+    color: #186eab !important;
+    font-family: open_sansbold !important;
+    text-align: center !important;
+    margin-top: 210px !important;
+    line-height: 50px !important;
+}
+.reconnaissance {
+    background: url("../images/bg-formation-initial-reconn.jpg")no-repeat !important;
+    background-size: cover !important;
+}
+
+.droit-accee{
+    font-size: 11px !important;
+    margin-top: -20px !important;
+    margin-bottom: 0px !important;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+    line-height: 17px !important;
+}
+@media screen and (max-width: 640px){
+    .droit-accee{
+        font-size: 17px !important;
+        margin-bottom: 10px !important;
+    }
+}
+#edit-accepter-wrapper span{
+    display: none;
+}
+#edit-accepter-wrapper p{
+    width: 94%;
+}

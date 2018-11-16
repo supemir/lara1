@@ -1,0 +1,28 @@
+$('#edit-new-produit-demande-wrapper').hide();
+$('#edit-new-produit-demande-wrapper1').hide();
+$('#edit-new-produit-demande-wrapper2').hide();
+
+
+function showDiv(elem)
+{
+   if(elem.value == 1 || elem.value == 2 )
+   {
+      document.getElementById('edit-new-produit-demande-wrapper').style.display = "block";
+      $('#edit-new-produit-demande-wrapper1').hide();
+      $('#edit-new-produit-demande-wrapper2').hide();
+    }
+   
+   if(elem.value == 3 || elem.value == 4 || elem.value == 5 )
+   {
+      document.getElementById('edit-new-produit-demande-wrapper1').style.display = "block";
+      $('#edit-new-produit-demande-wrapper').hide();
+      $('#edit-new-produit-demande-wrapper2').hide();
+   }
+    if(elem.value == 0 )
+   {
+      document.getElementById('edit-new-produit-demande-wrapper2').style.display = "block";
+      $('#edit-new-produit-demande-wrapper1').hide();
+      $('#edit-new-produit-demande-wrapper').hide();
+    }
+
+}
